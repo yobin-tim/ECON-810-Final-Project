@@ -1,0 +1,41 @@
+\documentclass[notes, 10pt,t]{beamer}
+\usepackage{pgfpages}
+\usetheme{Madrid}
+\usepackage{lastpage}
+\usepackage{appendixnumberbeamer}
+\setbeameroption{hide notes}
+%\setbeameroption{show notes on second screen =right}
+\usepackage[us]{datetime}
+\newdate{duedate}{9}{3}{2022} %to set a due date
+\definecolor{UWRed}{RGB}{153,1,0}
+\usecolortheme[named=UWRed]{structure}
+\setbeamercolor{button}{bg=UWRed, fg=white}
+\usepackage{appendixnumberbeamer}
+
+\title{ECON 810 Final Project}
+\date{\displaydate{duedate}}
+\author{Yobin  \& Mitchell}
+%\institute{}
+
+\setbeamertemplate{footline}
+{%
+	\leavevmode%
+	\hbox{\begin{beamercolorbox}[wd=.4\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm]{frametitle}%
+			
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.6\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=.3cm,rightskip=.3cm plus1fil]{frametitle}%
+			\usebeamerfont{section in head/foot}\insertshortauthor\hfill\insertframenumber/\pageref{mypage}
+	\end{beamercolorbox}}%
+	\vskip0pt%
+}
+
+\setbeamertemplate{footline}[frame number]
+
+\newenvironment{wideitemize}{\itemize\addtolength{\itemsep}{10pt}}{\enditemize}
+\newenvironment{wideenumerate}{\enumerate\addtolength{\itemsep}{10pt}}{\endenumerate}
+
+\begin{document}
+	\begin{frame}
+		\maketitle
+	\end{frame}
+\end{document}
