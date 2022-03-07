@@ -6,7 +6,31 @@
 - At any period $t$ agents without a college degree $(\psi=0)$ decide to attend college or not.
 - If they attend college, spend $t+1, \ldots, t+5$ periods earning $0$ and after that get a college degree $(\psi = 1)$.
 
+### Firm Side
+- Two types of firms $H$ and $L$.
+- If employed by $I$ draw wage from $F_I$ with $ \mathbb{E}[H] > \mathbb{E}[L, \psi = 1] > \mathbb{E}[L, \psi = 0]$.
+- $H$ firm want to hire above only college graduates.
+- $L$ firm want to hire everyone.
+    - If $L$ hires you and you are a college graduate then you get a higher wage.
 
+#### Production Function
+- Firms have a production function $F_I(h,\psi)$:
+$$ f^I(h) = f^I(h, \psi) = A_I( h + \psi\varepsilon), \quad I \in\{L,H\} $$
+
+#### Firm Value Function
+$$
+\begin{aligned}
+J^I_{t}(\omega, \vec{h}) &=(1-\omega) f^I(\vec{h})+\beta_{f} \mathbb{E}\left[(1-\delta) J_{t+1}\left(\omega, \vec{h}^{\prime}\right)\right] \quad \forall t \leq T \\
+J^I_{T+1}(\omega, \vec{h}) &=0
+\end{aligned}
+$$
+
+### Labor market
+- Vacancies indexed by $\omega$, $h$ and $I$ -- $v_t(\omega,h,I)$.
+- Unemployed workers characterized by $\omega$, $h$, and $\psi$ -- $u_t(\omega,h,\psi)$.
+- Labor market tightness $\theta_t(\omega,h,I,\psi)$.
+- Job finding rate $p(\cdot) = \frac{M(u,v)}{u}$ and hiring rate $p_f(\cdot) = \frac{M(u,v)}{v}$.
+- 
 #### Agents Value Function
 
 $$
@@ -19,24 +43,7 @@ $$
 $$
 p(\psi) = p_H(\psi)\mu  + p_L(\psi)(1-\mu)
 $$
-### Firm Side
-- Two types of firms $H$ and $L$.
-- If employed by $I$ draw wage from $F_I$ with $\mathbb{E}[H]>\mathbb{E}[L, \psi = 1] >\mathbb{E}[L, \psi = 0] $.
-- $H$ firm want to hire above only college graduates.
-- $L$ firm want to hire everyone.
-    - If $L$ hires you and you are a college graduate then you get a higher wage.
 
-#### Production Function
-- Firms have a production function $F_I(h,\psi)$:
-$$ F_I(h, \psi) = A_I( h + \psi\varepsilon), \quad I \in\{L,H\} $$
-
-#### Firm Value Function
-$$
-\begin{aligned}
-J^H_{t}(\omega, \vec{h}) &=(1-\omega) f(\vec{h})+\beta_{f} \mathbb{E}\left[(1-\delta) J_{t+1}\left(\omega, \vec{h}^{\prime}\right)\right] \quad \forall t \leq T \\
-J^H_{T+1}(\omega, \vec{h}) &=0
-\end{aligned}
-$$
 
 
 ## Simulation
