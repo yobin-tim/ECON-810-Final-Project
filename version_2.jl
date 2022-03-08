@@ -2,7 +2,7 @@
 using Parameters, Statistics, Distributions, ProgressBars, SharedArrays, Distributed
 
 # Include strutures with primitives and results
-include("structures.jl")
+@everywhere include("structures.jl")
 addprocs(4) 
 # Initialize the model
 @everywhere function Init()
@@ -75,7 +75,7 @@ addprocs(4)
 end
 
 # Compute the value function
-function vfn(prim::Primitives, res::Results, pre_comp::Pre_Computed)
+@everywhere function vfn(prim::Primitives, res::Results, pre_comp::Pre_Computed)
     
     # Unpack primitives, results and pre-computed variables
     @unpack T, n_kPoints, n_hPoints, n_SPoints, R_L, R_H, h_grid, k_grid, r, u, β, s_grid, S_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α, b, Π, S_bar, δ, μ  = prim

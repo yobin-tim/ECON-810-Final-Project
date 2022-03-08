@@ -1,4 +1,4 @@
-@everywhere using Parameters, Statistics, Distributions, ProgressBars, SharedArrays
+@everywhere using Parameters, Statistics, Distributions, SharedArrays
 include("tauchen.jl")
 
 @everywhere @with_kw struct Primitives
@@ -7,7 +7,7 @@ include("tauchen.jl")
     T::Int64                    = 30                        #in years
     A::Float64                  = 1.2                    #productivity scale                  
     R_L::Function               = (t) -> (1.0019)^(t-1)     #rental rate on labor
-    R_H::Function               = (t) -> (A * 1.0019)^(t-1)
+    R_H::Function               = (t) -> A * (1.0019)^(t-1)
     μ_z::Float64                = -0.029
     σ_z::Float64                = sqrt(0.11)
     σ::Float64                  = 2
@@ -96,5 +96,5 @@ end
 @everywhere mutable struct Pre_Computed
     K_net                 ::Array{Float64,2}        # Net of assets: (1+r)k - k'
     ℓ_effective           ::Array{Float64,2}        # Effective labor: h(1-s) 
-    h_next_indexes                ::Array{Int64,3}        # Next period human capital
+    h_next_indexes        ::Array{Int64,3}        # Next period human capital
 end

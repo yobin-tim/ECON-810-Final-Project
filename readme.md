@@ -126,3 +126,9 @@ $$
 $$
 with the budget constraint 
 $$   c + k' \leq R^I_t h l + k(1 +r) $$
+
+### Code Notes
+- OG version:
+  - Has A compounding over time.
+- Version 2(V2)
+  - Has A be a constant productivity difference over time.
