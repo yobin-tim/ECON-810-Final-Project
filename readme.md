@@ -1,8 +1,8 @@
 # Final Project 810
 
-## Description
+<!-- ## Description -->
 
-### Human-capital accumulation 
+<!-- ### Human-capital accumulation 
 - At any period $t$ agents without a college degree $(\psi=0)$ decide to attend college or not.
 - If they attend college, spend $t+1, \ldots, t+5$ periods earning $0$ and after that get a college degree $(\psi = 1)$.
 
@@ -67,10 +67,63 @@ p(\psi) = p_H(\psi)\mu  + p_L(\psi)(1-\mu)
 $$ -->
 
 
-#### Employed workers
+<!-- #### Employed workers
 - Might want to quit in search of a college degree. This can make it too complicated!
 - Simplest case would be to not allow employed agents to make college decision while employed.
 
 ## Simulation
 - Agents start $\psi=0$.
-- Agents start with different initial wealth.
+- Agents start with different initial wealth. --> 
+
+
+## Model
+- Households live for $ T $ periods, without retirement. Agents are heterogeneous in human capital $ h $ and assets $ k $. Agents are either employed or unemployed (but looking for a job). They spend $ s $ proportion of time in school each period.  Moreover, $ S $ represents cumulative years of schooling.
+- There are two kinds of firms: a high type and a low type.
+
+### Firms
+- There are $2$ firm types $I \in \{L,H\}$, with $ \mu $ fraction of firms being the low type.
+- Firm type $I=L$ hires all workers while firm type $I=H$ hires only workers with $S \geq \underline{S}$.
+
+### Workers
+- Law of motion of human capital is: $h' = \exp(z) H(h,s)$ where $z \in \mathbb{R}_+$ is a random shock. 
+
+#### Unemployed Workers
+- Search for a job with intensity $\gamma$, $(\gamma + s = 1)$.
+- Receive a job offer with probability $\pi(\gamma, S)$, $(\pi(0,\cdot) = 0)$ -- $ \pi_t(\gamma, S) = \gamma \cdot \frac{S}{t} $.
+- Dependent on $S$ they might receive an offer from just $L$ or both firms.
+- Receive unemployment benefits $b$ while unemployed.
+    
+- There are $3$ state variables:
+  - $h \in \mathbb{R}_+$ human capital. Law of motion $ h' = \exp{z'} H(h,s) $.
+  - $k \in \mathbb{R}_+$ assets.
+  - $S \in \mathbb{R}_+$ (accumulated) schooling. Law of motion $ S' = S + s $.
+
+
+**Value Function if $S < \underline{S}$**
+
+$$
+    U_t(h,k,S) =  \max_{k',s} \left\{ u(c) + \beta\mathbb{E}\left[\pi(\gamma, S)W^L_{t+1}(h',k',S')
+    + (1 - \pi(\gamma, S))U^L_{t+1}(h',k',S')  \right] \right\}
+$$
+
+
+**Value Function if $S \geq \underline{S}$
+**
+$$
+	U_t(h,k,S) =   \max_{k',s} \biggl\{ u(c) + \beta\mathbb{E}\biggl[\pi(\gamma, S) \left[\mu W^L_{t+1}(h',k',S') + (1 - \mu) W^H_{t+1}(h',k',S') \right]
+		+  (1 - \pi(\gamma, S)) U^L_{t+1}(h',k',S')  \biggr] \biggr\}
+$$
+with the budget constraint 
+$$ c + k' \leq b + k(1+r).$$
+#### Employed Workers
+- Divide their time for $ s + l = 1 $.
+- No on-the-job search allowed.
+
+
+**Value function**
+$$
+	W^I_t(h,k,S) =  \max_{k',s} \left\{ u(c) + \beta\mathbb{E}\left[ (1 - \delta) W^I_{t+1}(h',k',S')
+	+ \delta  U_{t+1}(h',k',S')  \right] \right\}
+$$
+with the budget constraint 
+$$   c + k' \leq R^I_t h l + k(1 +r) $$
