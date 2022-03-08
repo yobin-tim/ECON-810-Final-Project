@@ -1,6 +1,6 @@
 @everywhere using Parameters, Statistics, Distributions, ProgressBars, SharedArrays
 
-include("../Problem Set 2/tauchen.jl")
+include("tauchen.jl")
 
 @everywhere @with_kw struct Primitives
     β::Float64                  = 0.99
@@ -13,12 +13,13 @@ include("../Problem Set 2/tauchen.jl")
     σ_z::Float64                = sqrt(0.11)
     σ::Float64                  = 2
     z                           = Normal(μ_z, σ_z)
-    n_zPoints::Int64            = 10
+    n_zPoints::Int64            = 8
     tauchen                     = tauchenMethod(μ_z,σ_z,0.0,n_zPoints)
     z_grid                      = tauchen[1]
     z_trProb                    = tauchen[2][1,:]
     b::Float64                  = 0.2
     δ::Float64                  = 0.1
+    μ::Float64                  = 0.2                   #todo: calibrate if possible
     α::Float64                  = 0.70
     H::Function                 = (h,s) -> h + (h*s)^α
     u::Function                 = (c) -> (c^(1 - σ)-1)/(1 - σ)
@@ -34,16 +35,16 @@ include("../Problem Set 2/tauchen.jl")
     hc_i                        = Normal(μ_hc, σ_hc)
     #Asset grid 
     k_min::Float64              = 0.0
-    k_max::Float64              = 60.0
-    n_kPoints::Int64            = 121
+    k_max::Float64              = 40.0
+    n_kPoints::Int64            = 41
     k_grid::Array{Float64,1}    = range(k_min, k_max, length=n_kPoints)
     #Share of time to invest in human capital
-    n_sPoints::Int64            = 11
+    n_sPoints::Int64            = 6
     s_grid::Array{Float64,1}    = range(0.0,1.0,length = n_sPoints)
     #Cumulative years of schooling
-    n_SPoints::Int64            = n_sPoints * T
+    n_SPoints::Int64            = (n_sPoints-1) * T + 1
     S_grid::Array{Float64,1}    = range(0.0, 1.0 * T, length = n_SPoints)
-    S_bar::Float64              = S_grid[120]                           #todo: calibrate, if possible
+    S_bar::Float64              = S_grid[121]                           #todo: calibrate, if possible
     #Simulations
     nSim::Int64                 = 1000
 end
@@ -52,10 +53,18 @@ end
     U::SharedArray{Float64,4}
     W_L::SharedArray{Float64,4}
     W_H::SharedArray{Float64,4}
-    k_pol::SharedArray{Float64,4}
-    k_pol_ind::SharedArray{Int64,4}
-    s_pol::SharedArray{Float64,4}
-    s_pol_ind::SharedArray{Int64,4}
+    k_pol_U::SharedArray{Float64,4}
+    k_pol_ind_U::SharedArray{Int64,4}
+    s_pol_U::SharedArray{Float64,4}
+    s_pol_ind_U::SharedArray{Int64,4}
+    k_pol_W_L::SharedArray{Float64,4}
+    k_pol_ind_W_L::SharedArray{Int64,4}
+    s_pol_W_L::SharedArray{Float64,4}
+    s_pol_ind_W_L::SharedArray{Int64,4}
+    k_pol_W_H::SharedArray{Float64,4}
+    k_pol_ind_W_H::SharedArray{Int64,4}
+    s_pol_W_H::SharedArray{Float64,4}
+    s_pol_ind_W_H::SharedArray{Int64,4}
 end
 
 
@@ -64,25 +73,33 @@ end
     U           = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
     W_L         = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
     W_H         = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    k_pol       = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    k_pol_ind   = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    s_pol       = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    s_pol_ind   = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    res         = Results(U, W_L, W_H ,k_pol, k_pol_ind, s_pol, s_pol_ind)
+    k_pol_U       = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    k_pol_ind_U   = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_U       = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_ind_U   = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    k_pol_W_L       = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    k_pol_ind_W_L   = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_W_L       = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_ind_W_L   = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    k_pol_W_H       = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    k_pol_ind_W_H   = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_W_H       = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_ind_W_H   = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    res         = Results(U, W_L, W_H ,k_pol_U, k_pol_ind_U, s_pol_U, s_pol_ind_U,k_pol_W_L, k_pol_ind_W_L, s_pol_W_L, s_pol_ind_W_L,k_pol_W_H, k_pol_ind_W_H, s_pol_W_H, s_pol_ind_W_H)
     return prim, res
 end
 
 
-function vfn(prim::Primitives, res::Results)
-    @unpack T, n_kPoints, n_hPoints, n_SPoints, R_L, R_H, h_grid, k_grid, r, u, β, s_grid, S_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α, b, Π, S_bar  = prim
-    @unpack U, W_L, W_H, k_pol, s_pol, k_pol_ind, s_pol_ind = res
+function vfn2(prim::Primitives, res::Results)
+    @unpack T, n_kPoints, n_hPoints, n_SPoints, R_L, R_H, h_grid, k_grid, r, u, β, s_grid, S_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α, b, Π, S_bar, δ, μ  = prim
+    @unpack U, W_L, W_H ,k_pol_U, k_pol_ind_U, s_pol_U, s_pol_ind_U,k_pol_W_L, k_pol_ind_W_L, s_pol_W_L, s_pol_ind_W_L,k_pol_W_H, k_pol_ind_W_H, s_pol_W_H, s_pol_ind_W_H = res
 
     #Update last period value function
     for khS in 1:(n_kPoints * n_hPoints * n_SPoints) 
         k,h,S = Tuple(CartesianIndices((n_kPoints,n_hPoints,n_SPoints))[khS])
-        U[k,h,s,T]      = u.(k_grid[k] .* (1 + r) .+ b)
-        W_L[k,h,s,T]    = u.(k_grid[k] .* (1 + r) .+ R_L(T) .* h_grid[h])
-        W_H[k,h,s,T]    = u.(k_grid[k] .* (1 + r) .+ R_H(T) .* h_grid[h])
+        U[k,h,S,T]      = u.(k_grid[k] .* (1 + r) .+ b)
+        W_L[k,h,S,T]    = u.(k_grid[k] .* (1 + r) .+ R_L(T) .* h_grid[h])
+        W_H[k,h,S,T]    = u.(k_grid[k] .* (1 + r) .+ R_H(T) .* h_grid[h])
     end
     
 
@@ -92,7 +109,9 @@ function vfn(prim::Primitives, res::Results)
             budget_WL   = R_L(t) .* h_grid[h] .*  (1 .- s_grid) .+ k_grid[k]  * (1 + r)
             budget_WH   = R_H(t) .* h_grid[h] .*  (1 .- s_grid) .+ k_grid[k]  * (1 + r)
             budget_U    = b .+ k_grid[k] * (1 + r)
-            cand_val = -Inf
+            cand_val_U  = -Inf
+            cand_val_WL = -Inf
+            cand_val_WH = -Inf
             if S_grid[S] < S_bar
                 for s in 1:(n_sPoints)
                     hprime          = round.(exp.(z_grid) .* H(h_grid[h],s_grid[s]), digits = 1)  #use the law of motion
@@ -102,18 +121,48 @@ function vfn(prim::Primitives, res::Results)
                     for i in 1:size(hprime,1)
                         indexes[i]     = findfirst(x -> x == hprime[i], h_grid)[1]
                     end
+                    Sprime          = round.(min(S_grid[S] + s_grid[s], S_grid[end]), digits = 1)
+                    Sprime_ind      =  findfirst(x -> x == Sprime, S_grid)[1]
+                    #Loop for U
                     for kprime in 1:n_kPoints
-                        c = budget[s] - k_grid[kprime]
-                        if c < 0
+                        c_U = budget_U .- k_grid[kprime]
+                        if c_U < 0
                             break
                         end
-                        val_func = u(c) .+ β * h_trProb' *  V[kprime,indexes,t+1]
-                        if val_func[1] > cand_val
-                            V[k,h,t]            = val_func[1]
-                            k_pol[k,h,t]        = k_grid[kprime]
-                            s_pol[k,h,t]        = s_grid[s]
-                            k_pol_ind[k,h,t]    = kprime
-                            s_pol_ind[k,h,t]    = s
+                        val_func_U = u(c_U) .+ β * z_trProb' *  ( Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* W_L[kprime,indexes,Sprime_ind,t+1] .+ (1 .- Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* U[kprime, indexes, Sprime_ind, t+1]))
+                        if val_func_U[1] > cand_val_U
+                            U[k,h,S,t]              = val_func_U[1]
+                            k_pol_U[k,h,S,t]        = k_grid[kprime]
+                            s_pol_U[k,h,S,t]        = s_grid[s]
+                            k_pol_ind_U[k,h,S,t]    = kprime
+                            s_pol_ind_U[k,h,S,t]    = s
+                            cand_val_U              = val_func_U[1]
+                        end
+                    end
+                    #Loop for W_L and W_H
+                    for kprime in 1:n_kPoints
+                        c_WL = budget_WL[s] .- k_grid[kprime]
+                        c_WH = budget_WH[s] .- k_grid[kprime]
+                        if c_WH < 0 # since c_WL is always lower than c_WH
+                            break
+                        end
+                        val_func_WL = u(c_WL) .+ β * z_trProb' * ( (1 .- δ) .* W_L[kprime, indexes, Sprime_ind, t+1] .+ δ .* U[kprime, indexes, Sprime_ind, t+1] )
+                        val_func_WH = u(c_WL) .+ β * z_trProb' * ( (1 .- δ) .* W_H[kprime, indexes, Sprime_ind, t+1] .+ δ .* U[kprime, indexes, Sprime_ind, t+1] )
+                        if val_func_WL[1] > cand_val_WL
+                            W_L[k,h,S,t]                = val_func_WL[1]
+                            k_pol_W_L[k,h,S,t]          = k_grid[kprime]
+                            s_pol_W_L[k,h,S,t]          = s_grid[s]
+                            k_pol_ind_W_L[k,h,S,t]      = kprime
+                            s_pol_ind_W_L[k,h,S,t]      = s
+                            cand_val_WL                 = val_func_WL[1]
+                        end
+                        if val_func_WH[1] > cand_val_WH
+                            W_H[k,h,S,t]                = val_func_WH[1]
+                            k_pol_W_H[k,h,S,t]          = k_grid[kprime]
+                            s_pol_W_H[k,h,S,t]          = s_grid[s]
+                            k_pol_ind_W_H[k,h,S,t]      = kprime
+                            s_pol_ind_W_H[k,h,S,t]      = s
+                            cand_val_WH                 = val_func_WH[1]
                         end
                     end
                 end
@@ -126,19 +175,48 @@ function vfn(prim::Primitives, res::Results)
                     for i in 1:size(hprime,1)
                         indexes[i]     = findfirst(x -> x == hprime[i], h_grid)[1]
                     end
+                    Sprime          = round.(min(S_grid[S] + s_grid[s], S_grid[end]), digits = 1)
+                    Sprime_ind      =  findfirst(x -> x == Sprime, S_grid)[1]
+                    #Loop for U
                     for kprime in 1:n_kPoints
-                        c = budget[s] - k_grid[kprime]
-                        if c < 0
+                        c_U = budget_U[s] .- k_grid[kprime]
+                        if c_U < 0
                             break
                         end
-                        
-                        val_func = u(c) .+ β * h_trProb' *  V[kprime,indexes,t+1]
-                        if val_func[1] > cand_val
-                            V[k,h,t]            = val_func[1]
-                            k_pol[k,h,t]        = k_grid[kprime]
-                            s_pol[k,h,t]        = s_grid[s]
-                            k_pol_ind[k,h,t]    = kprime
-                            s_pol_ind[k,h,t]    = s
+                        val_func_U = u(c_U) .+ β * z_trProb' *  ( Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* ( μ .* W_L[kprime,indexes,Sprime_ind,t+1] .+ (1 - μ) .* W_H[kprime,indexes,Sprime_ind,t+1] ) .+ (1 .- Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* U[kprime, indexes, Sprime_ind, t+1]))
+                        if val_func_U[1] > cand_val_U
+                            U[k,h,S,t]              = val_func_U[1]
+                            k_pol_U[k,h,S,t]        = k_grid[kprime]
+                            s_pol_U[k,h,S,t]        = s_grid[s]
+                            k_pol_ind_U[k,h,S,t]    = kprime
+                            s_pol_ind_U[k,h,S,t]    = s
+                            cand_val_U              = val_func_U[1]
+                        end
+                    end
+                    #Loop for W_L and W_H
+                    for kprime in 1:n_kPoints
+                        c_WL = budget_WL[s] - k_grid[kprime]
+                        c_WH = budget_WH[s] - k_grid[kprime]
+                        if c_WH < 0 # since c_WL is always lower than c_WH
+                            break
+                        end
+                        val_func_WL = u(c_WL) .+ β * z_trProb' * ( (1 .- δ) .* W_L[kprime, indexes, Sprime_ind, t+1] .+ δ .* U[kprime, indexes, Sprime_ind, t+1] )
+                        val_func_WH = u(c_WL) .+ β * z_trProb' * ( (1 .- δ) .* W_H[kprime, indexes, Sprime_ind, t+1] .+ δ .* U[kprime, indexes, Sprime_ind, t+1] )
+                        if val_func_WL[1] > cand_val_WL
+                            W_L[k,h,S,t]                = val_func_WL[1]
+                            k_pol_W_L[k,h,S,t]          = k_grid[kprime]
+                            s_pol_W_L[k,h,S,t]          = s_grid[s]
+                            k_pol_ind_W_L[k,h,S,t]      = kprime
+                            s_pol_ind_W_L[k,h,S,t]      = s
+                            cand_val_WL                 = val_func_WL[1]
+                        end
+                        if val_func_WH[1] > cand_val_WH
+                            W_H[k,h,S,t]                = val_func_WH[1]
+                            k_pol_W_H[k,h,S,t]          = k_grid[kprime]
+                            s_pol_W_H[k,h,S,t]          = s_grid[s]
+                            k_pol_ind_W_H[k,h,S,t]      = kprime
+                            s_pol_ind_W_H[k,h,S,t]      = s
+                            cand_val_WH                 = val_func_WH[1]
                         end
                     end
                 end
@@ -147,6 +225,88 @@ function vfn(prim::Primitives, res::Results)
     end
 end
 
+function vfn(prim::Primitives, res::Results)
+    @unpack T, n_kPoints, n_hPoints, n_SPoints, R_L, R_H, h_grid, k_grid, r, u, β, s_grid, S_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α, b, Π, S_bar, δ, μ  = prim
+    @unpack U, W_L, W_H ,k_pol_U, k_pol_ind_U, s_pol_U, s_pol_ind_U,k_pol_W_L, k_pol_ind_W_L, s_pol_W_L, s_pol_ind_W_L,k_pol_W_H, k_pol_ind_W_H, s_pol_W_H, s_pol_ind_W_H = res
+
+    #Update last period value function
+    for khS in 1:(n_kPoints * n_hPoints * n_SPoints) 
+        k,h,S = Tuple(CartesianIndices((n_kPoints,n_hPoints,n_SPoints))[khS])
+        U[k,h,S,T]      = u.(k_grid[k] .* (1 + r) .+ b)
+        W_L[k,h,S,T]    = u.(k_grid[k] .* (1 + r) .+ R_L(T) .* h_grid[h])
+        W_H[k,h,S,T]    = u.(k_grid[k] .* (1 + r) .+ R_H(T) .* h_grid[h])
+    end
+    
+
+    for t in ProgressBar(T-1:-1:1) 
+        @sync @distributed for khS in 1:(n_kPoints * n_hPoints * n_SPoints)
+            k,h,S       = Tuple(CartesianIndices((n_kPoints,n_hPoints,n_SPoints))[khS])
+            budget_WL   = R_L(t) .* h_grid[h] .*  (1 .- s_grid) .+ k_grid[k]  * (1 + r)
+            budget_WH   = R_H(t) .* h_grid[h] .*  (1 .- s_grid) .+ k_grid[k]  * (1 + r)
+            budget_U    = b .+ k_grid[k] * (1 + r)
+            cand_val_U  = -Inf
+            cand_val_WL = -Inf
+            cand_val_WH = -Inf
+            for s in 1:(n_sPoints)
+                hprime          = round.(exp.(z_grid) .* H(h_grid[h],s_grid[s]), digits = 1)  #use the law of motion
+                hprime          = replace(x -> x > h_max ? h_max : x, hprime)   #replace values exceeding upper bound by h_max
+                hprime          = replace(x -> x < h_min ? h_min : x, hprime)   #replace values below lower bound by h_min 
+                indexes         = zeros(Int64,size(hprime,1),1)
+                for i in 1:size(hprime,1)
+                    indexes[i]     = findfirst(x -> x == hprime[i], h_grid)[1]
+                end
+                Sprime          = round.(min(S_grid[S] + s_grid[s], S_grid[end]), digits = 1)
+                Sprime_ind      =  findfirst(x -> x == Sprime, S_grid)[1]
+                #Loop for U
+                for kprime in 1:n_kPoints
+                    c_U = budget_U .- k_grid[kprime]
+                    if c_U < 0
+                        break
+                    end
+                    if S_grid[S] < S_bar
+                        val_func_U = u(c_U) .+ β * z_trProb' *  ( Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* W_L[kprime,indexes,Sprime_ind,t+1] .+ (1 .- Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* U[kprime, indexes, Sprime_ind, t+1]))
+                    else
+                        val_func_U = u(c_U) .+ β * z_trProb' *  ( Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* ( μ .* W_L[kprime,indexes,Sprime_ind,t+1] .+ (1 - μ) .* W_H[kprime,indexes,Sprime_ind,t+1] ) .+ (1 .- Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* U[kprime, indexes, Sprime_ind, t+1]))
+                    end
+                    if val_func_U[1] > cand_val_U
+                        U[k,h,S,t]              = val_func_U[1]
+                        k_pol_U[k,h,S,t]        = k_grid[kprime]
+                        s_pol_U[k,h,S,t]        = s_grid[s]
+                        k_pol_ind_U[k,h,S,t]    = kprime
+                        s_pol_ind_U[k,h,S,t]    = s
+                        cand_val_U              = val_func_U[1]
+                    end
+                end
+                #Loop for W_L and W_H
+                for kprime in 1:n_kPoints
+                    c_WL = budget_WL[s] .- k_grid[kprime]
+                    c_WH = budget_WH[s] .- k_grid[kprime]
+                    if c_WH < 0 # since c_WL is always lower than c_WH
+                        break
+                    end
+                    val_func_WL = u(c_WL) .+ β * z_trProb' * ( (1 .- δ) .* W_L[kprime, indexes, Sprime_ind, t+1] .+ δ .* U[kprime, indexes, Sprime_ind, t+1] )
+                    val_func_WH = u(c_WL) .+ β * z_trProb' * ( (1 .- δ) .* W_H[kprime, indexes, Sprime_ind, t+1] .+ δ .* U[kprime, indexes, Sprime_ind, t+1] )
+                    if val_func_WL[1] > cand_val_WL
+                        W_L[k,h,S,t]                = val_func_WL[1]
+                        k_pol_W_L[k,h,S,t]          = k_grid[kprime]
+                        s_pol_W_L[k,h,S,t]          = s_grid[s]
+                        k_pol_ind_W_L[k,h,S,t]      = kprime
+                        s_pol_ind_W_L[k,h,S,t]      = s
+                        cand_val_WL                 = val_func_WL[1]
+                    end
+                    if val_func_WH[1] > cand_val_WH
+                        W_H[k,h,S,t]                = val_func_WH[1]
+                        k_pol_W_H[k,h,S,t]          = k_grid[kprime]
+                        s_pol_W_H[k,h,S,t]          = s_grid[s]
+                        k_pol_ind_W_H[k,h,S,t]      = kprime
+                        s_pol_ind_W_H[k,h,S,t]      = s
+                        cand_val_WH                 = val_func_WH[1]
+                    end
+                end
+            end
+        end
+    end
+end
 
 @everywhere mutable struct Simulations
     hc::Array{Float64,2}
