@@ -5,7 +5,7 @@ include("tauchen.jl")
     β::Float64                  = 0.99
     r::Float64                  = 0.04
     T::Int64                    = 30                        #in years
-    A::Float64                                       #productivity scale                  
+    A::Float64                  = 1.2                    #productivity scale                  
     R_L::Function               = (t) -> (1.0019)^(t-1)     #rental rate on labor
     R_H::Function               = (t) -> (A * 1.0019)^(t-1)
     μ_z::Float64                = -0.029
@@ -18,7 +18,7 @@ include("tauchen.jl")
     z_trProb                    = tauchen[2][1,:]
     b::Float64                  = 0.5
     δ::Float64                  = 0.1
-    μ::Float64                                    #todo: calibrate if possible
+    μ::Float64                  = 1 - 0.2                     #todo: calibrate if possible
     α::Float64                  = 0.70
     H::Function                 = (h,s) -> h + (h*s)^α
     u::Function                 = (c) -> (c^(1 - σ)-1)/(1 - σ)
@@ -96,5 +96,5 @@ end
 @everywhere mutable struct Pre_Computed
     K_net                 ::Array{Float64,2}        # Net of assets: (1+r)k - k'
     ℓ_effective           ::Array{Float64,2}        # Effective labor: h(1-s) 
-    h_next                ::Array{Float64,3}        # Next period human capital
+    h_next_indexes                ::Array{Int64,3}        # Next period human capital
 end
