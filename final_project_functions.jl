@@ -17,9 +17,9 @@ include("tauchen.jl")
     tauchen                     = tauchenMethod(μ_z,σ_z,0.0,n_zPoints)
     z_grid                      = tauchen[1]
     z_trProb                    = tauchen[2][1,:]
-    b::Float64                  = 0.2
+    b::Float64                  = 0.5
     δ::Float64                  = 0.1
-    μ::Float64                  = 0.2                   #todo: calibrate if possible
+    μ::Float64                  = 1 - 0.2                   #todo: calibrate if possible
     α::Float64                  = 0.70
     H::Function                 = (h,s) -> h + (h*s)^α
     u::Function                 = (c) -> (c^(1 - σ)-1)/(1 - σ)
@@ -44,7 +44,8 @@ include("tauchen.jl")
     #Cumulative years of schooling
     n_SPoints::Int64            = (n_sPoints-1) * T + 1
     S_grid::Array{Float64,1}    = range(0.0, 1.0 * T, length = n_SPoints)
-    S_bar::Float64              = S_grid[121]                           #todo: calibrate, if possible
+    threshold::Float64          = 0.4
+    S_bar::Float64              = S_grid[round(Int64,n_SPoints * threshold)]                           #todo: calibrate, if possible
     #Simulations
     nSim::Int64                 = 1000
 end
@@ -333,35 +334,35 @@ function Init2(prim::Primitives)
     return sim
 end
 
-
-function runsim(prim::Primitives, res::Results, sim::Simulations)
-    @unpack hc, hc_ind, s_inv, s_ind, k, k_ind, c, wage_income = sim
-    @unpack V, k_pol, s_pol, k_pol_ind, s_pol_ind = res
-    @unpack T, nSim, hc_i, n_kPoints, n_hPoints, R, h_grid, k_grid, r, u, β, s_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α  = prim
-    hc_ind[:,1] = rand(1:n_hPoints, nSim)                   #initial human capital index, round off to match grid
-    hc[:,1]     = h_grid[hc_ind[:,1]]               
-    for t in 1:T 
-        for i in 1:nSim
-            s_inv[i,t]          = s_pol[k_ind[i,t],hc_ind[i,t],t]
-            s_ind[i,t]          = s_pol_ind[k_ind[i,t],hc_ind[i,t],t]
-            wage_income[i,t]    = R(t) * hc[i,t] * (1 - s_inv[i])
-            budget              = wage_income[i,t] + k[i,t] * (1 + r)
-            if t < T
-                k[i,t+1]            = k_pol[k_ind[i,t],hc_ind[i,t],t]
-                k_ind[i,t+1]        = k_pol_ind[k_ind[i,t],hc_ind[i,t],t]
-                c[i,t]              = budget - k[i,t+1]
-                hc[i,t+1]           = round.(rand(z_grid) * H(hc[i,t],s_inv[i,t]), digits = 1)
-                if hc[i,t+1] > h_max
-                    hc[i,t+1] = h_max
-                elseif hc[i,t+1] < h_min
-                    hc[i,t+1] = h_min
-                end 
-                hc_ind[i,t+1]       = findfirst(x -> x == hc[i,t+1], h_grid)[1]
-            else
-                c[i,t]              = budget
-            end
+# Simulation part, yet to be coded
+# function runsim(prim::Primitives, res::Results, sim::Simulations)
+#     @unpack hc, hc_ind, s_inv, s_ind, k, k_ind, c, wage_income = sim
+#     @unpack V, k_pol, s_pol, k_pol_ind, s_pol_ind = res
+#     @unpack T, nSim, hc_i, n_kPoints, n_hPoints, R, h_grid, k_grid, r, u, β, s_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α  = prim
+#     hc_ind[:,1] = rand(1:n_hPoints, nSim)                   #initial human capital index, round off to match grid
+#     hc[:,1]     = h_grid[hc_ind[:,1]]               
+#     for t in 1:T 
+#         for i in 1:nSim
+#             s_inv[i,t]          = s_pol[k_ind[i,t],hc_ind[i,t],t]
+#             s_ind[i,t]          = s_pol_ind[k_ind[i,t],hc_ind[i,t],t]
+#             wage_income[i,t]    = R(t) * hc[i,t] * (1 - s_inv[i])
+#             budget              = wage_income[i,t] + k[i,t] * (1 + r)
+#             if t < T
+#                 k[i,t+1]            = k_pol[k_ind[i,t],hc_ind[i,t],t]
+#                 k_ind[i,t+1]        = k_pol_ind[k_ind[i,t],hc_ind[i,t],t]
+#                 c[i,t]              = budget - k[i,t+1]
+#                 hc[i,t+1]           = round.(rand(z_grid) * H(hc[i,t],s_inv[i,t]), digits = 1)
+#                 if hc[i,t+1] > h_max
+#                     hc[i,t+1] = h_max
+#                 elseif hc[i,t+1] < h_min
+#                     hc[i,t+1] = h_min
+#                 end 
+#                 hc_ind[i,t+1]       = findfirst(x -> x == hc[i,t+1], h_grid)[1]
+#             else
+#                 c[i,t]              = budget
+#             end
             
             
-        end
-    end
-end
+#         end
+#     end
+# end
