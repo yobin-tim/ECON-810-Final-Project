@@ -59,52 +59,7 @@ end
     return prim, res
 end
 
-@everywhere function tr_mat(h::Float64, s::Float64)
-    @unpack α, H, z_grid, z_trProb, h_grid, h_max = Primitives()
-    hprime          = round.(exp.(z_grid) .* H(h,s), digits = 1)  #use the law of motion
-    hprime          = replace(x -> x > h_max ? h_max : x, hprime)   #replace values exceeding upper bound by  
-    h_trProb        = zeros(size(hprime,1),1)
-    indexes         = zeros(Int64,size(hprime,1),1)
-    for i in 1:size(hprime,1)
-        indexes[i]     = findfirst(x -> x == hprime[i], h_grid)[1]
-        h_trProb[i]    = z_trProb[i]
-    end
-    return hprime, h_trProb, indexes #h_prime grid may not be required
-end
 
-function vfn(prim::Primitives, res::Results)
-    @unpack T, n_kPoints, n_hPoints, R, h_grid, k_grid, r, u, β, s_grid, n_sPoints  = prim
-    @unpack V, k_pol, s_pol, k_pol_ind, s_pol_ind = res
-
-    V[:,:,T] = u.(k_grid .* (1 + r) .+ R(T) .* h_grid')
-    for t in ProgressBar(T-1:-1:1) 
-        @sync @distributed for kh in 1:(n_kPoints * n_hPoints)
-            k,h = Tuple(CartesianIndices((n_kPoints,n_hPoints))[kh])
-            # for h in 1:n_hPoints
-                budget = R(t) .* h_grid[h] .*  (1 .- s_grid) .+ k_grid[k]  * (1 + r)
-                cand_val = -Inf
-                @sync @distributed for skprime in 1:(n_kPoints *n_sPoints)
-                    kprime, s = Tuple(CartesianIndices((n_kPoints, n_sPoints))[skprime]) 
-                    c = budget[s] - k_grid[kprime]
-                    if c < 0
-                        break
-                    end
-                    hprime_grid, h_trProb, hprime_ind = tr_mat(h_grid[h],s_grid[s])
-                    val_func = u(c) .+ β * h_trProb' *  V[kprime,hprime_ind,t+1]
-                    if val_func[1] > cand_val
-                        V[k,h,t]            = val_func[1]
-                        k_pol[k,h,t]        = k_grid[kprime]
-                        k_pol_ind[k,h,t]    = kprime
-                        s_pol[k,h,t]        = s_grid[s]
-                        s_pol_ind[k,h,t]    = s
-                    end
-                end
-            # end
-        end
-    end
-end
-
-#vfn2 not using tr_mat and reducing computation of h' given (h,s).
 function vfn2(prim::Primitives, res::Results)
     @unpack T, n_kPoints, n_hPoints, R, h_grid, k_grid, r, u, β, s_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α  = prim
     @unpack V, k_pol, s_pol, k_pol_ind, s_pol_ind = res
@@ -148,19 +103,6 @@ function vfn2(prim::Primitives, res::Results)
     end
 end
 
-# for kprime in 1:n_kPoints, s in 1:n_sPoints 
-#     c = budget[s] - k_grid[k]
-#     if c < 0
-#         break
-#     end
-#     hprime_grid, h_trProb, hprime_ind = tr_mat(h_grid[h],s_grid[s])
-#     val_func = u(c) .+ β * h_trProb' *  V[k,hprime_ind,t+1]
-#     if val_func[1] > cand_val
-#         V[k,h,t]        = val_func[1]
-#         k_pol[k,h,t]    = k_grid[kprime]
-#         s_pol[k,h,t]    = s_grid[s]
-#     end
-# end
 
 @everywhere mutable struct Simulations
     hc::Array{Float64,2}
@@ -172,6 +114,7 @@ end
     c::Array{Float64,2}
     wage_income::Array{Float64,2}
 end
+
 
 function Init2(prim::Primitives)
     hc          = zeros(prim.nSim, prim.T)
@@ -185,6 +128,7 @@ function Init2(prim::Primitives)
     sim = Simulations(hc, hc_ind, s_inv, s_ind, k, k_ind, c, wage_income)
     return sim
 end
+
 
 function runsim(prim::Primitives, res::Results, sim::Simulations)
     @unpack hc, hc_ind, s_inv, s_ind, k, k_ind, c, wage_income = sim
@@ -217,4 +161,3 @@ function runsim(prim::Primitives, res::Results, sim::Simulations)
         end
     end
 end
-
