@@ -60,7 +60,7 @@ end
 end
 
 
-function vfn2(prim::Primitives, res::Results)
+function vfn(prim::Primitives, res::Results)
     @unpack T, n_kPoints, n_hPoints, R, h_grid, k_grid, r, u, β, s_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α  = prim
     @unpack V, k_pol, s_pol, k_pol_ind, s_pol_ind = res
 
