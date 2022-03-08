@@ -103,15 +103,14 @@ $$ -->
 
 $$
     U_t(h,k,S) =  \max_{k',s} \left\{ u(c) + \beta\mathbb{E}\left[\pi(\gamma, S)W^L_{t+1}(h',k',S')
-    + (1 - \pi(\gamma, S))U^L_{t+1}(h',k',S')  \right] \right\}
+    + (1 - \pi(\gamma, S))U_{t+1}(h',k',S')  \right] \right\}
 $$
 
 
-**Value Function if $S \geq \underline{S}$
-**
+**Value Function if $S \geq \underline{S}$**
 $$
 	U_t(h,k,S) =   \max_{k',s} \biggl\{ u(c) + \beta\mathbb{E}\biggl[\pi(\gamma, S) \left[\mu W^L_{t+1}(h',k',S') + (1 - \mu) W^H_{t+1}(h',k',S') \right]
-		+  (1 - \pi(\gamma, S)) U^L_{t+1}(h',k',S')  \biggr] \biggr\}
+		+  (1 - \pi(\gamma, S)) U_{t+1}(h',k',S')  \biggr] \biggr\}
 $$
 with the budget constraint 
 $$ c + k' \leq b + k(1+r).$$
