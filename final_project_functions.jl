@@ -248,6 +248,9 @@ function vfn(prim::Primitives, res::Results)
             cand_val_U  = -Inf
             cand_val_WL = -Inf
             cand_val_WH = -Inf
+            if S > (t-1) * (n_sPoints - 1) + 1
+                continue
+            end
             for s in 1:(n_sPoints)
                 hprime          = round.(exp.(z_grid) .* H(h_grid[h],s_grid[s]), digits = 1)  #use the law of motion
                 hprime          = replace(x -> x > h_max ? h_max : x, hprime)   #replace values exceeding upper bound by h_max
@@ -265,9 +268,9 @@ function vfn(prim::Primitives, res::Results)
                         break
                     end
                     if S_grid[S] < S_bar
-                        val_func_U = u(c_U) .+ β * z_trProb' *  ( Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* W_L[kprime,indexes,Sprime_ind,t+1] .+ (1 .- Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* U[kprime, indexes, Sprime_ind, t+1]))
+                        val_func_U = u(c_U) .+ β * z_trProb' *  ( Π(1 .-s_grid[s], S_grid[S],t) .* W_L[kprime,indexes,Sprime_ind,t+1] .+ (1 .- Π(1 .-s_grid[s], S_grid[S],t) .* U[kprime, indexes, Sprime_ind, t+1]))
                     else
-                        val_func_U = u(c_U) .+ β * z_trProb' *  ( Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* ( μ .* W_L[kprime,indexes,Sprime_ind,t+1] .+ (1 - μ) .* W_H[kprime,indexes,Sprime_ind,t+1] ) .+ (1 .- Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* U[kprime, indexes, Sprime_ind, t+1]))
+                        val_func_U = u(c_U) .+ β * z_trProb' *  ( Π(1 .-s_grid[s], S_grid[S],t) .* ( μ .* W_L[kprime,indexes,Sprime_ind,t+1] .+ (1 - μ) .* W_H[kprime,indexes,Sprime_ind,t+1] ) .+ (1 .- Π(1 .-s_grid[s], S_grid[S],t) .* U[kprime, indexes, Sprime_ind, t+1]))
                     end
                     if val_func_U[1] > cand_val_U
                         U[k,h,S,t]              = val_func_U[1]

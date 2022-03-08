@@ -3,7 +3,7 @@ using Parameters, Statistics, Distributions, ProgressBars, SharedArrays, Distrib
 
 # Include strutures with primitives and results
 include("structures.jl")
-
+addprocs(4) 
 # Initialize the model
 @everywhere function Init()
     
@@ -13,7 +13,7 @@ include("structures.jl")
     # μ                   = 1 - 0.2                   #todo: calibrate if possible
     # prim                = Primitives(A,μ)
     prim                = Primitives()
-    # Initilize the value functions
+    # Initialize the value functions
     U                   = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
     W_L                 = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
     W_H                 = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)

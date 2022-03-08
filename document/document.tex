@@ -51,8 +51,8 @@
 \textbf{Value Function if $S < \underline{S}$}
 
 \begin{align*}
-    U_t(h,k,S) =  \max_{k',s} \left\{ u(c) + \beta\mathbb{E}\left[\pi(\gamma, S)W^L_{t+1}(h',k',S')
-    + (1 - \pi(\gamma, S))U^L_{t+1}(h',k',S')  \right] \right\}
+    U_t(h,k,S) =  \max_{k',s} \left\{ u(c) + \beta\mathbb{E}\left[\pi(\gamma, S) \cdot \mu \cdot W^L_{t+1}(h',k',S')
+    + (1 - \pi(\gamma, S) \cdot \mu)U^L_{t+1}(h',k',S')  \right] \right\}
 \end{align*}
 
 
