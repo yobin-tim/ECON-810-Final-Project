@@ -44,7 +44,8 @@ def filter_data(data, start_year, end_year, variables, filters ):
         elif len(filter) == 2:
             # If the filter is a list of two numbers, we filter the dataframe with '<=' and '>='
             df = df[(df[variable] >= filter[0]) & (df[variable] <= filter[1])]
-
+    return df
+    
 def filter_by_earnigs(data, earnings_variable, earnings_cuttof, number_of_years):
     '''
     Filters the data for the given earnings_variable and earnings_cuttof and number_of_years.

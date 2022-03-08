@@ -1,0 +1,116 @@
+%% LyX 2.3.2-2 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{luainputenc}
+\usepackage{geometry}
+\geometry{verbose,tmargin=0.8in,bmargin=0.8in,lmargin=0.8in,rmargin=0.8in}
+\usepackage{color}
+\usepackage{babel}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage[authoryear]{natbib}
+\onehalfspacing
+\usepackage[unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 1},backref=false,colorlinks=true]
+ {hyperref}
+\hypersetup{
+ pdfborderstyle=,pdfborderstyle={},pdfborderstyle={},linkcolor=blue,urlcolor=blue,citecolor=blue,pdfstartview={FitH},hyperfootnotes=false}
+
+\makeatletter
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+% %% Because html converters don't know tabularnewline
+% \providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+%\documentclass[11pt]{article}
+\usepackage{etex}
+%\usepackage[round,longnamesfirst]{natbib}
+\usepackage{amsfonts}
+\usepackage{mathpazo}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+	colorlinks,
+	linkcolor={blue!75!black},
+	citecolor={blue!75!black},
+}
+\usepackage{multimedia}
+\usepackage{graphicx, color}
+%\usepackage{pstricks,pst-node,fancybox,pst-text}
+\usepackage{epsfig}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{fancyheadings}
+\usepackage{float}
+\usepackage{color}
+\usepackage{mathrsfs}
+\usepackage{setspace}
+%\usepackage{lipsum}
+%\usepackage{tikz}
+\usepackage[mathscr]{euscript}
+\usepackage{caption}
+%\usepackage{subcaption}
+\usepackage{pdflscape}
+\usepackage{rotating}
+\usepackage{booktabs}
+%\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\usepackage[bottom]{footmisc}
+
+\newenvironment{definition}[1][Definition]{\begin{trivlist}
+		\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\setlength{\topmargin}{-0.4in}
+\setlength{\textheight}{8.85in}
+
+%%  Edited to make stat review comments easier
+\newif\ifStatReview% \StatReviewfalse
+%%\StatReviewtrue    %   Show stat review comments
+\StatReviewfalse    %   Ignore stat review comments
+\ifStatReview
+    \setlength{\oddsidemargin}{-0.2in}
+    \setlength{\evensidemargin}{0.0in}
+    \setlength{\textwidth}{6.0in}
+    
+    
+    \usepackage{tikz}
+    \let\oldmarginpar\marginpar
+    % renew the \marginpar command to draw 
+    % a node; it has a default setting which 
+    % can be overwritten
+    \renewcommand{\marginpar}[2][rectangle,draw,fill=yellow,rounded corners,text width=3.5cm]{%
+            \oldmarginpar{%
+            \tikz \node at (0,0) [#1]{#2};}%
+            }
+    \newcounter{statreview}
+    \newenvironment{statreview}[1][]{\refstepcounter{statreview}\par\medskip
+       \textbf{Stat Review~\thestatreview #1} \rmfamily}{\medskip}
+  \else
+    \setlength{\oddsidemargin}{-0.2in}
+    \setlength{\evensidemargin}{0.0in}
+    \setlength{\textwidth}{6.93in}
+    \renewcommand{\marginpar}[2][]{}
+\fi
+
+\renewcommand{\baselinestretch}{1.44}
+
+\usepackage{setspace}
+\onehalfspacing
+
+\@ifundefined{showcaptionsetup}{}{%
+ \PassOptionsToPackage{caption=false}{subfig}}
+\usepackage{subfig}
+\makeatother

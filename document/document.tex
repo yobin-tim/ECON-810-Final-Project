@@ -1,0 +1,68 @@
+\documentclass[12pt]{article}
+% \input{imports}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+\begin{document}
+\title{Problem Set 1 }
+\author{Mitchell Valdes-Bobes}
+\maketitle
+% \begin{abstract}
+% 	We examine [X]
+% \end{abstract}
+% \thispagestyle{empty}
+
+% \pagebreak{}
+% This paper .... 
+
+
+\section{Model}
+
+\begin{itemize}
+    \item There are $4$ state variables:
+    \begin{itemize}
+        \item $e \in \{0,1\}$ employment status.
+        \item $h \in \mathbb{R}_+$ human capital.
+        \item $k \in \mathbb{R}_+$ assets.
+        \item $S \in \mathbb{R}_+$ (accumulated) schooling.
+    \end{itemize}
+    \item There are $2$ firms $I \in \{L,H\}$
+    \item Firm $I=L$ hires all workers.
+    \item Firm $I=H$ hires only workers with $S \geq \underline{S}$.
+    \item Workers con invest in schooling a fraction of time $s\leq 1$.
+    \item Law of motion of human capital is: $h' = \exp(z) H(h,s)$ where $z \in \mathbb{R}_+$ is a random shock. 
+\end{itemize}
+
+\subsection{Unemployed Workers}
+\begin{itemize}
+    \item Search for a job with intensity $\gamma$, $(\gamma + s \leq 1)$.
+    \item Recieve a job offer with probability $\pi(\gamma, S)$, $(\pi(0,\cdot) = 0)$.    
+    \item Dependent on $S$ they migth recieve an offer from just $L$ or both firms.
+    \item Recieve unemployment beneffits $b$.
+\end{itemize}
+
+\textbf{Value Function if $S < \underline{S}$}
+
+\begin{align*}
+    U_t(h,k,S) = \\
+    &\max_{k,s} \left\{ u(c) + \beta\mathbb{E}\left[\pi(\gamma, S)W^L_{t+1}(h',k',S')
+    + (1 - \pi(\gamma, S))U^L_{t+1}(h',k',S')  \right] \right\}
+\end{align*}
+
+\textbf{Value Function if $S \geq \underline{S}$}
+
+% \begin{align*}
+%     U_t(h,k,S) = \\
+%     &\max_{k,s} \left\{ u(c) + \beta\mathbb{E}\left[\pi(\gamma, S)\left(\mu W^L_{t+1}(h',k',S')
+%     + (1 - \pi(\gamma, S))U^L_{t+1}(h',k',S')  \right] \right\}
+% \end{align*}
+
+
+
+
+\bibliographystyle{chicago}
+\bibliography{references}
+
+
+\end{document}
