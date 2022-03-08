@@ -69,7 +69,7 @@ include("structures.jl")
         end
     end
 
-    pre_comp            = Pre_Computed(K_net, ℓ_effective, h_next_indexes)
+    pre_comp            = Pre_Computed(K_net', ℓ_effective', h_next_indexes)
     # Return primitives and results
     return prim, res, pre_comp
 end
@@ -82,6 +82,7 @@ function vfn(prim::Primitives, res::Results, pre_comp::Pre_Computed)
     @unpack val_fun, k_pol, s_pol = res
     @unpack K_net, ℓ_effective, h_next_indexes = pre_comp
     # Compute the value function
+
     for t in ProgressBar(T-1:-1:1) 
         @sync @distributed for khS in 1:(n_kPoints * n_hPoints * n_SPoints)
             k,h,S       = Tuple(CartesianIndices((n_kPoints,n_hPoints,n_SPoints))[khS])
@@ -95,9 +96,9 @@ function vfn(prim::Primitives, res::Results, pre_comp::Pre_Computed)
             income_WH   = R_H(t) .* ℓ_effective[h, :] # Possible income for each selection of s (Firm H)
             k_net       = K_net[k,:] # Net capital for each possible choice of k_next
             
-            C_WL   = repeat(k_net', 1 ,n_sPoints) .+ repeat(income_WL, n_kPoints, 1) # Consumption for each selection of (k', s) (Firm L)
-            C_WH   = repeat(k_net', 1 ,n_sPoints) .+ repeat(income_WH, n_kPoints, 1) # Consumption for each selection of (k', s) (Firm H)
-            C_U = b .+ repeat(k_net', 1 ,n_sPoints)
+            C_WL   = repeat(k_net, 1 ,n_sPoints) .+ repeat(income_WL', n_kPoints, 1) # Consumption for each selection of (k', s) (Firm L)
+            C_WH   = repeat(k_net, 1 ,n_sPoints) .+ repeat(income_WH', n_kPoints, 1) # Consumption for each selection of (k', s) (Firm H)
+            C_U = b .+ repeat(k_net, 1 ,n_sPoints)
             U_WL = zeros(size(C_WL)) # Utility for each selection of (k', s) (Firm L)
             U_WH = zeros(size(C_WH)) # Utility for each selection of (k', s) (Firm H)
             U_U = zeros(size(C_U))
@@ -122,8 +123,8 @@ function vfn(prim::Primitives, res::Results, pre_comp::Pre_Computed)
                     temp_exp_U[kprime,s]  = (val_fun.U[kprime, h_next_ind, Sprime_ind[s], t+1] * z_trProb  )[1]
                 end
             end
-            println(size(temp_exp_WL))
-            println(size(U_WL))
+            # println(size(temp_exp_WL))
+            # println(size(U_WL))
             temp_WL = U_WL + β*( (1-δ) * temp_exp_WL + δ * temp_exp_U )
             temp_WH = U_WH + β*( (1-δ) * temp_exp_WH + δ * temp_exp_U ) 
             Π_sh = Π.(1 .- s_grid, S_grid[S], t)'
