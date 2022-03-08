@@ -1,9 +1,9 @@
 # Load packages
 using Parameters, Statistics, Distributions, ProgressBars, SharedArrays, Distributed
 
-# Include strutures with primitives and results
+addprocs(6) 
 @everywhere include("structures.jl")
-addprocs(4) 
+# Include strutures with primitives and results
 # Initialize the model
 @everywhere function Init()
     
@@ -102,12 +102,12 @@ end
             U_WL = zeros(size(C_WL)) # Utility for each selection of (k', s) (Firm L)
             U_WH = zeros(size(C_WH)) # Utility for each selection of (k', s) (Firm H)
             U_U = zeros(size(C_U))
-            U_WL[C_WL .< 0] .= -Inf # Set impossible consumption to -Inf
-            U_WL[C_WL .>= 0] .= u.(C_WL[C_WL .>= 0]) # Set possible consumption to utility
-            U_WH[C_WH .< 0] .= -Inf # Set impossible consumption to -Inf
-            U_WH[C_WH .>= 0] .= u.(C_WH[C_WH .>= 0]) # Set possible consumption to utility
-            U_U[C_U .< 0] .= -Inf # Set impossible consumption to -Inf
-            U_U[C_U .>= 0] .= u.(C_U[C_U .>= 0]) # Set possible consumption to utility
+            U_WL[C_WL .<= 0] .= -Inf # Set impossible consumption to -Inf
+            U_WL[C_WL .> 0] .= u.(C_WL[C_WL .>= 0]) # Set possible consumption to utility
+            U_WH[C_WH .<= 0] .= -Inf # Set impossible consumption to -Inf
+            U_WH[C_WH .> 0] .= u.(C_WH[C_WH .>= 0]) # Set possible consumption to utility
+            U_U[C_U .<= 0] .= -Inf # Set impossible consumption to -Inf
+            U_U[C_U .> 0] .= u.(C_U[C_U .>= 0]) # Set possible consumption to utility
             
             # cand_val_U  = -Inf
             # cand_val_WL = -Inf
@@ -152,61 +152,10 @@ end # End of function
 @time prim, res, pre_comp = Init();
 @time vfn(prim, res, pre_comp)
 
-#             for s in 1:(n_sPoints)
-#                 hprime = h_next[h,s,:] 
-#                 indexes         = zeros(Int64,size(hprime,1),1)
-#                 for i in 1:size(hprime,1)
-#                     indexes[i]     = findfirst(x -> x == hprime[i], h_grid)[1]
-#                 end
-#                 Sprime          = round.(min(S_grid[S] + s_grid[s], S_grid[end]), digits = 1)
-#                 Sprime_ind      =  findfirst(x -> x == Sprime, S_grid)[1]
-#                 #Loop for U
-#                 for kprime in 1:n_kPoints
-#                     c_U = budget_U .- k_grid[kprime]
-#                     if c_U < 0
-#                         break
-#                     end
-#                     if S_grid[S] < S_bar
-#                         val_func_U = u(c_U) .+ β * z_trProb' *  ( Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* W_L[kprime,indexes,Sprime_ind,t+1] .+ (1 .- Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* U[kprime, indexes, Sprime_ind, t+1]))
-#                     else
-#                         val_func_U = u(c_U) .+ β * z_trProb' *  ( Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* ( μ .* W_L[kprime,indexes,Sprime_ind,t+1] .+ (1 - μ) .* W_H[kprime,indexes,Sprime_ind,t+1] ) .+ (1 .- Π(1 .-s_grid[s], S_grid[Sprime_ind],t) .* U[kprime, indexes, Sprime_ind, t+1]))
-#                     end
-#                     if val_func_U[1] > cand_val_U
-#                         U[k,h,S,t]              = val_func_U[1]
-#                         k_pol_U[k,h,S,t]        = k_grid[kprime]
-#                         s_pol_U[k,h,S,t]        = s_grid[s]
-#                         k_pol_ind_U[k,h,S,t]    = kprime
-#                         s_pol_ind_U[k,h,S,t]    = s
-#                         cand_val_U              = val_func_U[1]
-#                     end
-#                 end
-#                 #Loop for W_L and W_H
-#                 for kprime in 1:n_kPoints
-#                     c_WL = budget_WL[s] .- k_grid[kprime]
-#                     c_WH = budget_WH[s] .- k_grid[kprime]
-#                     if c_WH < 0 # since c_WL is always lower than c_WH
-#                         break
-#                     end
-#                     val_func_WL = u(c_WL) .+ β * z_trProb' * ( (1 .- δ) .* W_L[kprime, indexes, Sprime_ind, t+1] .+ δ .* U[kprime, indexes, Sprime_ind, t+1] )
-#                     val_func_WH = u(c_WL) .+ β * z_trProb' * ( (1 .- δ) .* W_H[kprime, indexes, Sprime_ind, t+1] .+ δ .* U[kprime, indexes, Sprime_ind, t+1] )
-#                     if val_func_WL[1] > cand_val_WL
-#                         W_L[k,h,S,t]                = val_func_WL[1]
-#                         k_pol_W_L[k,h,S,t]          = k_grid[kprime]
-#                         s_pol_W_L[k,h,S,t]          = s_grid[s]
-#                         k_pol_ind_W_L[k,h,S,t]      = kprime
-#                         s_pol_ind_W_L[k,h,S,t]      = s
-#                         cand_val_WL                 = val_func_WL[1]
-#                     end
-#                     if val_func_WH[1] > cand_val_WH
-#                         W_H[k,h,S,t]                = val_func_WH[1]
-#                         k_pol_W_H[k,h,S,t]          = k_grid[kprime]
-#                         s_pol_W_H[k,h,S,t]          = s_grid[s]
-#                         k_pol_ind_W_H[k,h,S,t]      = kprime
-#                         s_pol_ind_W_H[k,h,S,t]      = s
-#                         cand_val_WH                 = val_func_WH[1]
-#                     end
-#                 end
-#             end
-#         end
-#     end
-# end
+using JLD
+
+jldopen("results.jld", "w") do file
+    write(file, "val_fun", res.val_fun)
+    write(file, "k_pol", res.k_pol)
+    write(file, "s_pol", res.s_pol)
+end
