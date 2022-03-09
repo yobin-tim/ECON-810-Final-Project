@@ -11,21 +11,13 @@ begin
     @time prim, res, pre_comp = Init();
     # @time vfn(prim, res, pre_comp)
     # save_data(res, path, "_v2")
-    # using JLD
 
-    # jldopen("results.jld", "w") do file
-    #     write(file, "val_fun", res.val_fun)
-    #     write(file, "k_pol", res.k_pol)
-    #     write(file, "s_pol", res.s_pol)
-    # end
     # prim, res, pre_comp = Init()
     # vfn(prim,res,pre_comp)
 
     # prim, res_vmu, pre_comp = Init(μarg = 0.95)
     # vfn(prim,res_vmu,pre_comp)
     # save_data(res, path)
-
-        
 
     # prim, res_vA, pre_comp = Init(Aarg = 1.05)
     # vfn(prim,res_vA,pre_comp)
