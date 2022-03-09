@@ -26,21 +26,21 @@ using Parameters, Statistics, Distributions, ProgressBars, SharedArrays, Distrib
     val_fun             = ValueFunction(U, W_L, W_H)
     
     # Initialize the asset holdings policy functions
-    k_pol_U             = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    k_pol_ind_U         = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    k_pol_U             = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T) 
+    k_pol_U .= 1
     k_pol_W_L           = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    k_pol_ind_W_L       = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    k_pol_W_L .= 1
     k_pol_W_H           = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    k_pol_ind_W_H       = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    k_pol_W_H .= 1
     k_pol               = PolicyFunctionAssets(k_pol_U, k_pol_W_L, k_pol_W_H)
     
     # Initialize the schooling choice policy functions
     s_pol_U             = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    s_pol_ind_U         = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_U .= 1
     s_pol_W_L           = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    s_pol_ind_W_L       = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_W_L .= 1
     s_pol_W_H           = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    s_pol_ind_W_H       = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_W_H .= 1
     s_pol               = PolicyFunctionSchooling(s_pol_U, s_pol_W_L, s_pol_W_H)
     
     # Initialize the structure to hold the results
@@ -182,8 +182,9 @@ function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_
         end
     end
 
-    
+    print("t =")
     for t in 1:T-1       
+        print("--$t")
         # Figure out which agents are employed and where
         id_U  = (emp_status[:,t] .== 0)
         id_WL = (emp_status[:,t] .== 1)
@@ -191,21 +192,27 @@ function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_
 
         # Employment status
         ## next period asset holdings
-        k[id_U,t+1]          = k_pol.U[k[id_U,t], hc[id_U,t], S[id_U,t],t] # k_t+1 unemployed
-        k[id_WL,t+1]         = k_pol.W_L[k[id_WL,t], hc[id_WL,t], S[id_WL,t],t] # k_t+1 employed in low-wage
-        k[id_WH,t+1]         = k_pol.W_H[k[id_WH,t], hc[id_WH,t], S[id_WH,t],t] # k_t+1 employed in high-wage
+
+        # println(k_pol.U[k[id_U,t][1:2], hc[id_U,t][1:2], S[id_U,t][1:2],t])
+        # println(k[id_U,t])
+        # for ind in CartesianIndex.(k[id_U,t], hc[id_U,t], S[id_U,t])
+        #     println(ind)
+        # end
+        k[id_U,t+1]          = k_pol.U[CartesianIndex.(k[id_U,t], hc[id_U,t], S[id_U,t]),t] # k_t+1 unemployed
+        k[id_WL,t+1]         = k_pol.W_L[CartesianIndex.(k[id_WL,t], hc[id_WL,t], S[id_WL,t]),t] # k_t+1 employed in low-wage
+        k[id_WH,t+1]         = k_pol.W_H[CartesianIndex.(k[id_WH,t], hc[id_WH,t], S[id_WH,t]),t] # k_t+1 employed in high-wage
         ## schooling choice
-        s[id_U,t]            = s_pol.U[k[id_U,t], hc[:,t], S[:,t],t] #s_t unemployed
-        s[id_WL,t]           = s_pol.W_L[k[id_WL,t], hc[id_WL,t], S[id_WL,t],t] #s_t employed in low-wage
-        s[id_WH,t]           = s_pol.W_H[k[id_WH,t], hc[id_WH,t], S[id_WH,t],t] #s_t employed in high-wage
+        s[id_U,t]            =   s_pol.U[CartesianIndex.(k[id_U,t], hc[:,t], S[:,t]),t] #s_t unemployed
+        s[id_WL,t]           = s_pol.W_L[CartesianIndex.(k[id_WL,t], hc[id_WL,t], S[id_WL,t]),t] #s_t employed in low-wage
+        s[id_WH,t]           = s_pol.W_H[CartesianIndex.(k[id_WH,t], hc[id_WH,t], S[id_WH,t]),t] #s_t employed in high-wage
         ## Consumption 
-        c[id_U, t]          .= b + (1 + r) .* k[id_U, t]
-        c[id_WL, t]         .= R_L(t) .* hc[id_WL, t] .* (1 .- s[id_WL,t] ) .*  (1 + r) .* k[id_WL, t]
-        c[id_WH, t]         .= R_H(t) .* hc[id_WH, t] .* (1 .- s[id_WH,t] ) .*  (1 + r) .* k[id_WH, t]
+        c[id_U, t]          .= b .+ (1 + r) .* k_grid[k[id_U, t]] - k_grid[k[id_U,t+1] ]
+        c[id_WL, t]         .= R_L(t) .* h_grid[hc[id_WL, t]] .* (1 .- s_grid[s[id_WL,t]] ) .*  (1 + r) .* k_grid[k[id_WL, t]] - k_grid[k[id_WL,t+1]] 
+        c[id_WH, t]         .= R_H(t) .* h_grid[hc[id_WH, t]] .* (1 .- s_grid[s[id_WH,t]] ) .*  (1 + r) .* k_grid[k[id_WH, t]] - k_grid[k[id_WH,t+1]]
         # Job offer
-        Π_offer         = Π.(1 .- s[:,t], S_grid[S[:,t]], t) # Probability of getting a job offer
+        Π_offer         = Π.(1 .- s_grid[s[:,t]], S_grid[S[:,t]], t) # Probability of getting a job offer
         offer           = rand(Uniform(0,1), nSim) .< Π_offer
-        good_offer      = ( S[:,t] .>= S_bar ) .* ( rand(Uniform(0,1), nSim) .< 1-μ )
+        good_offer      = ( S_grid[S[:,t]] .>= S_bar ) .* ( rand(Uniform(0,1), nSim) .< 1-μ )
         
         emp_status[id_U,t+1] = (offer .* good_offer) .+ offer
         emp_status[id_WL .+ id_WH, t+1] = emp_status[id_WL .+ id_WH, t] .* δ_mat[id_WL .+ id_WH, t]
@@ -223,8 +230,8 @@ function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_
     id_WL = (emp_status[:,T] == 1)
     id_WH = (emp_status[:,T] == 2) 
     ## Consumption 
-    c[id_U, T]          .=            b + (1 + r) .* k[id_U, T]
-    c[id_WL, T]         .= R_L(T) .* hc[id_WL, T] .* (1 .- s[id_WL,T] ) .*  (1 + r) .* k[id_WL, T]
-    c[id_WH, T]         .= R_H(T) .* hc[id_WH, T] .* (1 .- s[id_WH,T] ) .*  (1 + r) .* k[id_WH, T]
+    c[id_U, T]  .=            b .+ (1 + r) .* k_grid(k[id_U, T])
+    c[id_WL, T] .= R_L(T) .* h_grid[hc[id_WL, T]] #.* (1 .- s_grid[s[id_WL,T]] ) .*  (1 + r) .* k_grid[k[id_WL, T]]
+    c[id_WH, T] .= R_H(T) .* h_grid[hc[id_WH, T]] #.* (1 .- s_grid[s[id_WH,T]] ) .*  (1 + r) .* k_grid[k[id_WH, T]]
 
 end # End of runsim
