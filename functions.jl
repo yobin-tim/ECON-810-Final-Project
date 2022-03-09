@@ -26,22 +26,22 @@ using Parameters, Statistics, Distributions, ProgressBars, SharedArrays, Distrib
     val_fun             = ValueFunction(U, W_L, W_H)
     
     # Initialize the asset holdings policy functions
-    k_pol_U             = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    k_pol_U             = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
     k_pol_ind_U         = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    k_pol_W_L           = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    k_pol_W_L           = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
     k_pol_ind_W_L       = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    k_pol_W_H           = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    k_pol_W_H           = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
     k_pol_ind_W_H       = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    k_pol               = PolicyFunctionAssets(k_pol_U, k_pol_ind_U, k_pol_W_L, k_pol_ind_W_L, k_pol_W_H, k_pol_ind_W_H)
+    k_pol               = PolicyFunctionAssets(k_pol_U, k_pol_W_L, k_pol_W_H)
     
     # Initialize the schooling choice policy functions
-    s_pol_U             = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_U             = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
     s_pol_ind_U         = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    s_pol_W_L           = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_W_L           = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
     s_pol_ind_W_L       = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    s_pol_W_H           = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
+    s_pol_W_H           = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
     s_pol_ind_W_H       = SharedArray{Int64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
-    s_pol               = PolicyFunctionSchooling(s_pol_U, s_pol_ind_U, s_pol_W_L, s_pol_ind_W_L, s_pol_W_H, s_pol_ind_W_H)
+    s_pol               = PolicyFunctionSchooling(s_pol_U, s_pol_W_L, s_pol_W_H)
     
     # Initialize the structure to hold the results
     res                 = Results(val_fun, k_pol, s_pol)
@@ -162,9 +162,9 @@ function Init2(prim::Primitives)
 end
 
 function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_Computed)
-    @unpack T, n_kPoints, n_hPoints, n_SPoints, R_L, R_H, h_grid, k_grid, r, u, β, s_grid, S_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α, b, Π, S_bar, δ, μ  = prim
+    @unpack T, n_kPoints, n_hPoints, n_SPoints, R_L, R_H, h_grid, k_grid, r, u, β, s_grid, S_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α, b, Π, S_bar, δ, μ, nSim, n_zPoints  = prim
     @unpack k_pol, s_pol  = res
-    @unpackk k, c, income, hc, emp_status, emp_streak, S, s = sim
+    @unpack k, c, income, hc, emp_status, emp_streak, S, s = sim
     @unpack h_next_indexes = pre_comp
 
     #Initial period setup; indexes initialized at 1, assets at 0 already
@@ -172,6 +172,8 @@ function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_
     k[:,1]      .= rand(1:round(n_kPoints/2), nSim) # Todo: If we have time maybe do somethin like match the real distribution of wealth
     emp_status[:,1] .= 0
 
+    Z_mat = zeros(nSim, T)
+    δ_mat = zeros(nSim, T)
     # Draw z and δ shocks
     for j in 1:T 
         for i in 1:nSim  
