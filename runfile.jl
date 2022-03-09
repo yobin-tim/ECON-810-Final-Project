@@ -1,6 +1,23 @@
 # Load packages
-using Parameters, Statistics, Distributions, ProgressBars, SharedArrays, Distributed
+using Parameters, Statistics, Distributions, ProgressBars, SharedArrays, Distributed, StatsPlots
+using CSV, DataFrames
+
+# Load data
+data = CSV.read("data/data_filt.csv", DataFrame)
+
+# @df combine( grou )
+
+data_sub = combine( groupby(data, [:age, :education_resp_HS]) , :income => median)
+
+
+@df data_sub plot(:age, :income_median, group = :education_resp_HS, linewidth = 2.5, legend = :topleft, 
+                xlabel = "Age", ylabel = "Median Income ( '000s dollars )", 
+                title = "Median Income by Age and Education Level")
+savefig("figures/fig_median_income_by_age_and_education.pdf")
+
 addprocs(4) 
+
+
 
 @everywhere include("functions.jl")
 include("aux_functions.jl")
@@ -29,29 +46,52 @@ begin
     # save_data(res, path)
 end 
 
-prim, res, pre_comp = read_data(path, "_v1")
+prim, res, pre_comp = read_data(path, "_valt")
 
 sim = Init2(prim)
-runsim(prim, res, sim, pre_comp)
+runsim(prim, res, sim, pre_comp, 4.0)
 
-plot(res.val_fun.U[:, 50, 56, 12])
-plot!(res.val_fun.W_H[:, 50, 56, 12])
-plot!(res.val_fun.W_L[:, 50, 56, 12])
+data_sim= sim_to_df(sim, prim)
+data_sim = data_sim[data_sim.year .< 30, :]
+data_sim[!, :college] = data_sim[!, :S] .> 4.0
+data_sim[!, :emp_simple] = data_sim.emp_status .== 0.0
 
-# plot(res_v2["s_pol"].U[20,40,1,:], label="1")
-# plot!(res_v2["s_pol"].U[20,40,10,:], label="10")
-# plot!(res_v2["s_pol"].U[20,40,20,:], label="20")
-# plot!(res_v2["s_pol"].U[20,40,30,:], label="30")
-# plot(res_v2["s_pol"].U[20,40,100,:], label="100")
+@df combine( groupby(data_sim, :year) , :emp_simple => mean) plot(:year, :emp_simple_mean)
 
-# res_v2["s_pol"].U[:,:,1,:]
-plot( mean( prim.h_grid[sim.hc] , dims = 1)' , legend = false)
-plot( mean( prim.S_grid[sim.S] , dims = 1)' , legend = false)
-plot( mean( prim.s_grid[sim.s] , dims = 1)' , legend = false)
+function label(x)
+    if x == 0 
+        return "Unemployed"
+    elseif x == 1
+        return "Employed Low Firm"
+    else
+        return "Employed High Firm"
+    end
+end
 
-plot(100 * sum(prim.S_grid[sim.S]  .>= prim.S_bar , dims = 1)' / prim.nSim)
+data_sim[!, :emp_status_label] = label.(data_sim[:, :emp_status])
 
-using StatsPlots
 
-histogram(prim.k_grid[sim.k][:,1], bins = 50)
-histogram!(prim.k_grid[sim.k][:,end-10], bins = 50, alpha=0.5)
+data_sim_sub = combine( groupby(data_sim, [:year, :emp_status_label]) , :hc => mean)
+
+@df data_sim_sub plot(:year, :hc_mean, group = :emp_status_label, linewidth = 2.5, legend = :topleft, 
+                xlabel = "Age", ylabel = "Median Income ", 
+                title = "Median Income by (model) Age and Employment")
+
+# savefig("figures/fig_median_income_by_age_and_employment_sim_data.pdf")
+
+data_sim_sub = combine( groupby(data_sim, [:year, :college]) , :income => median)
+
+@df data_sim_sub plot(:year, :income_median, group = :college, linewidth = 2.5, legend = :topleft, 
+                xlabel = "Age", ylabel = "Median Income ( '000s dollars )", 
+                title = "Median Income by Age and Education Level")
+
+
+
+begin
+    @df combine(groupby(data_sim[data_sim.emp_status .== 0, :], :year), :S => mean) plot(:year, :S_mean, linewidth = 2.5, legend = :topleft, 
+                    xlabel = "Age", ylabel = "Median Schooling", label = "Unemployed",
+                    title = "Median Schooling by Age and Employement Status")
+
+    @df combine(groupby(data_sim[data_sim.emp_status .== 1, :], :year), :S => mean) plot!(:year, :S_mean, linewidth = 2.5, label = "Employed Low Firm")
+    @df combine(groupby(data_sim[data_sim.emp_status .== 2, :], :year), :S => mean) plot!(:year, :S_mean, linewidth = 2.5, label = "Employed High Firm")                
+end
