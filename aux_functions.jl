@@ -12,7 +12,8 @@ end
 
 # This function to save data to files
 function save_data(res, path, suffix)
-    path = path *"/"* suffix * "/";
+    path = path * suffix * "/";
+    run(`mkdir -p $path`)
     npzwrite(path*"U"*suffix*".npz", res.val_fun.U)
     npzwrite(path*"W_L"*suffix*".npz", res.val_fun.W_L)
     npzwrite(path*"W_H"*suffix*".npz", res.val_fun.W_H)
@@ -30,7 +31,7 @@ function read_data(path, suffix)
 
     # First initialize the structures
     prim, res, pre_comp = Init()
-    path = path *"/"* suffix * "/";
+    path = path * suffix * "/";
     res.val_fun.U = npzread(path*"U"*suffix*".npz")
     res.val_fun.W_L = npzread(path*"W_L"*suffix*".npz")
     res.val_fun.W_H = npzread(path*"W_H"*suffix*".npz")

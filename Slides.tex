@@ -1,4 +1,4 @@
-\documentclass[notes, 10pt,t]{beamer}
+\documentclass[notes, 10pt]{beamer}
 \usepackage{pgfpages}
 \usetheme{Madrid}
 \usepackage{lastpage}
@@ -50,25 +50,29 @@
 	\section{Model}
 	\begin{frame}{Model}{Environment}
 		\begin{wideitemize}
-			\item Households live for $ T $ periods, without retirement. 
+			\item Agents live for $ T $ periods, without retirement. 
 			\item Agents are heterogeneous in human capital $ h $, assets $ k $, and years of schooling $S$. 
-			\item They spend $ s $ proportion of time in school each period.
+			\item Agents have 1 unit of time endowment each period.
+			\item They spend $ s \leq 1$ investing in education each period.
 			\item Agents are either employed or unemployed (but looking for a job).
-			\item There are two kinds of firms: a high type and a low type.
+			\item There are two kinds of firms: good firms (high type) and bad firms (low type).
 		\end{wideitemize}
 	\end{frame}
 
-	\begin{frame}{Model}{Firms}
+	\begin{frame}[c]{Model}{Firms}
 		\begin{wideitemize}
 			\item There are $2$ firm types $I \in \{L,H\}$.
-			\item $ \mu $ fraction of firms are low type. Alternatively, we could think of this as $\mu$ proportion of all job vacancies are for the low type firm.
+			\item $ \mu $ fraction of firms are low type.
+			\begin{wideitemize}
+				\item  Alternatively, we could think of this as $\mu$ proportion of all job vacancies are for the low type firm.
+			\end{wideitemize}
 			\item Firm type $I=L$ hires all workers while firm type $I=H$ hires only workers with $S \geq \underline{S}$.
 		\end{wideitemize}
 	\end{frame}
 
 	\begin{frame}{Model}{Workers}
 		\begin{wideitemize}
-			\item Workers are either employed ( without on the job search) or unemployed (actively searching for a job).
+			\item Workers are either employed (without on the job search) or unemployed (actively searching for a job).
 			\item Agents take as given these $3$ state variables each period:
 			\begin{wideitemize}
 				\item $h \in \mathbb{R}_+$ human capital. Law of motion $ h' = \exp{z'} H(h,s) $.
