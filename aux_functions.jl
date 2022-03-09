@@ -1,13 +1,13 @@
 # Packages for plotting and saving/loading data 
-using NPZ, Plots
+using NPZ, Plots, DataFrames
 
 include("functions.jl")
 
 # Plot style
 begin
-    theme(:juno); #:vibrant
+    theme(:vibrant); #:vibrant
     default(fontfamily="Computer Modern", framestyle=:box); # LaTex-style
-    gr(size = (400, 400)); # default plot size
+    # gr(size = (800, 400)); # default plot size
 end
 
 # This function to save data to files
@@ -43,4 +43,23 @@ function read_data(path, suffix)
     res.s_pol.W_H = npzread(path*"s_pol_WH"*suffix*".npz")
 
     return prim, res, pre_comp
+end
+
+# Function turns simulation object into a dataframe
+function sim_to_df(sim::Simulations, prim::Primitives)
+
+    years = [i for i in 1:prim.T] 
+    agents = [i for i in 1:prim.nSim]
+    # @show repeat(agents, prim.T, 1)
+    return  DataFrame([
+        :id => repeat(agents, prim.T, 1)[:],
+        :year => repeat(years', prim.nSim, 1)[:],
+        :c => sim.c[:],
+        :S => prim.S_grid[sim.S[:]],
+        :s => prim.s_grid[sim.s[:]],
+        :emp_status => sim.emp_status[:],
+        :hc => prim.h_grid[sim.hc[:]],
+        :income => sim.income[:],
+        :k => prim.k_grid[sim.k[:]]
+    ])
 end
