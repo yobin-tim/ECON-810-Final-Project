@@ -132,3 +132,18 @@ $$   c + k' \leq R^I_t h l + k(1 +r) $$
   - Has A compounding over time.
 - Version 2(V2)
   - Has A be a constant productivity difference over time.
+
+- Version $\mu$ (_vmu files)
+  - Has the alternative specification of $\mu = 0.95$.
+  - Makes getting an offer from the high type firm even rarer.
+  - npz files saved as files ending with ".._vmu.npz".
+
+- Version $A$ (_vA files)
+  - Has the alternative specification of $A = 1.05$.
+  - Reduces the productivity difference between firms -- more directly reduces labor earnings difference.
+  - npz files saved as files ending with ".._vA.npz".
+
+- Version thr (_vthr files)
+  - Has the alternative specification of $thr = 0.5$.
+  - Increases the qualifications required for the high paying job.
+  - npz files saved as files ending with ".._vthr.npz".

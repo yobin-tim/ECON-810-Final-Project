@@ -4,14 +4,14 @@ using Parameters, Statistics, Distributions, ProgressBars, SharedArrays, Distrib
 @everywhere include("structures.jl")
 # Include strutures with primitives and results
 # Initialize the model
-@everywhere function Init()
+@everywhere function Init(;μarg = 0.8, thr = 0.4, Aarg = 1.2)
     
     # Initialize the primitives
-    #! Everithing that should be calibrated I will pass as a parameter to the primitive struct
+    #! Everything that should be calibrated I will pass as a parameter to the primitive struct
     # A                   = 1.2                       #productivity scale #todo: if possible, calibrate                 
     # μ                   = 1 - 0.2                   #todo: calibrate if possible
     # prim                = Primitives(A,μ)
-    prim                = Primitives()
+    prim                = Primitives(μ = μarg, threshold = thr, A = Aarg)
     # Initialize the value functions
     U                   = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
     W_L                 = SharedArray{Float64}(prim.n_kPoints, prim.n_hPoints, prim.n_SPoints, prim.T)
@@ -102,11 +102,11 @@ end
             U_WH = zeros(size(C_WH)) # Utility for each selection of (k', s) (Firm H)
             U_U = zeros(size(C_U))
             U_WL[C_WL .<= 0] .= -Inf # Set impossible consumption to -Inf
-            U_WL[C_WL .> 0] .= u.(C_WL[C_WL .>= 0]) # Set possible consumption to utility
+            U_WL[C_WL .> 0] .= u.(C_WL[C_WL .> 0]) # Set possible consumption to utility
             U_WH[C_WH .<= 0] .= -Inf # Set impossible consumption to -Inf
-            U_WH[C_WH .> 0] .= u.(C_WH[C_WH .>= 0]) # Set possible consumption to utility
+            U_WH[C_WH .> 0] .= u.(C_WH[C_WH .> 0]) # Set possible consumption to utility
             U_U[C_U .<= 0] .= -Inf # Set impossible consumption to -Inf
-            U_U[C_U .> 0] .= u.(C_U[C_U .>= 0]) # Set possible consumption to utility
+            U_U[C_U .> 0] .= u.(C_U[C_U .> 0]) # Set possible consumption to utility
             
             # cand_val_U  = -Inf
             # cand_val_WL = -Inf
