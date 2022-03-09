@@ -98,3 +98,15 @@ end
     ℓ_effective           ::Array{Float64,2}        # Effective labor: h(1-s) 
     h_next_indexes        ::Array{Int64,3}        # Next period human capital
 end
+
+# Structures to hold simulation results
+@everywhere mutable struct Simulations
+    k::Array{Int64,2}
+    c::Array{Float64,2}
+    income::Array{Float64,2}
+    hc::Array{Int64,2}
+    emp_status::Array{Int64,2}
+    emp_streak::Array{Int64,2}
+    S::Array{Int64,2}
+    s::Array{Int64,2}
+end

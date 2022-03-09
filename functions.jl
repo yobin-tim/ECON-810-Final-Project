@@ -1,5 +1,5 @@
 # Load packages
-using Parameters, Statistics, Distributions, ProgressBars, SharedArrays, Distributed
+using Parameters, Statistics, Distributions, ProgressBars, SharedArrays, Distributed, StatsBase
 
 @everywhere include("structures.jl")
 # Include strutures with primitives and results
@@ -148,3 +148,81 @@ end
 end # End of function
 
 
+function Init2(prim::Primitives)
+    income = zeros(prim.nSim, prim.T)
+    hc = ones(prim.nSim, prim.T)
+    emp_status = zeros(prim.nSim, prim.T)
+    emp_streak = zeros(prim.nSim, prim.T)
+    k = ones(prim.nSim, prim.T+1)
+    c = zeros(prim.nSim, prim.T)
+    S = ones(prim.nSim, prim.T)
+    s = ones(prim.nSim, prim.T)
+    sim         = Simulations(k, c, income, hc, emp_status, emp_streak, S, s)
+    return sim
+end
+
+function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_Computed)
+    @unpack T, n_kPoints, n_hPoints, n_SPoints, R_L, R_H, h_grid, k_grid, r, u, β, s_grid, S_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α, b, Π, S_bar, δ, μ  = prim
+    @unpack k_pol, s_pol  = res
+    @unpackk k, c, income, hc, emp_status, emp_streak, S, s = sim
+    @unpack h_next_indexes = pre_comp
+
+    #Initial period setup; indexes initialized at 1, assets at 0 already
+    # emp_status initialized at 0 too.
+    k[:,1]      .= rand(1:round(n_kPoints/2), nSim) # Todo: If we have time maybe do somethin like match the real distribution of wealth
+    emp_status[:,1] .= 0
+
+    # Draw z and δ shocks
+    for j in 1:T 
+        for i in 1:nSim  
+            Z_mat[i,j] = sample(1:n_zPoints, Weights(z_trProb) )
+            δ_mat[i,j] = sample([0, 1] , Weights([δ , 1-δ]) )
+        end
+    end
+
+    
+    for t in 1:T-1       
+        # Figure out which agents are employed and where
+        id_U  = (emp_status[:,t] == 0)
+        id_WL = (emp_status[:,t] == 1)
+        id_WH = (emp_status[:,t] == 2) 
+
+        # Employment status
+        ## next period asset holdings
+        k[id_U,t+1]          = k_pol.U[k[id_U,t], hc[id_U,t], S[id_U,t],t] # k_t+1 unemployed
+        k[id_WL,t+1]         = k_pol.W_L[k[id_WL,t], hc[id_WL,t], S[id_WL,t],t] # k_t+1 employed in low-wage
+        k[id_WH,t+1]         = k_pol.W_H[k[id_WH,t], hc[id_WH,t], S[id_WH,t],t] # k_t+1 employed in high-wage
+        ## schooling choice
+        s[id_U,t]            = s_pol.U[k[id_U,t], hc[:,t], S[:,t],t] #s_t unemployed
+        s[id_WL,t]           = s_pol.W_L[k[id_WL,t], hc[id_WL,t], S[id_WL,t],t] #s_t employed in low-wage
+        s[id_WH,t]           = s_pol.W_H[k[id_WH,t], hc[id_WH,t], S[id_WH,t],t] #s_t employed in high-wage
+        ## Consumption 
+        c[id_U, t]          .= b + (1 + r) .* k[id_U, t]
+        c[id_WL, t]         .= R_L(t) .* hc[id_WL, t] .* (1 .- s[id_WL,t] ) .*  (1 + r) .* k[id_WL, t]
+        c[id_WH, t]         .= R_H(t) .* hc[id_WH, t] .* (1 .- s[id_WH,t] ) .*  (1 + r) .* k[id_WH, t]
+        # Job offer
+        Π_offer         = Π.(1 .- s[:,t], S_grid[S[:,t]], t) # Probability of getting a job offer
+        offer           = rand(Uniform(0,1), nSim) .< Π_offer
+        good_offer      = ( S[:,t] .>= S_bar ) .* ( rand(Uniform(0,1), nSim) .< 1-μ )
+        
+        emp_status[id_U,t+1] = (offer .* good_offer) .+ offer
+        emp_status[id_WL .+ id_WH, t+1] = emp_status[id_WL .+ id_WH, t] .* δ_mat[id_WL .+ id_WH, t]
+
+        emp_streak[:, t+1] .+= 1
+        emp_streak[id_U, t+1] .= 0 # Todo: Fix this 
+
+        
+        hc[:,t+1]         = h_next_indexes[ hc[:,t], s[:,t], Z_mat[:,t]]
+    end # End of for t in 2:T-1
+
+    # Last period
+    # Figure out which agents are employed and where
+    id_U  = (emp_status[:,T] == 0)
+    id_WL = (emp_status[:,T] == 1)
+    id_WH = (emp_status[:,T] == 2) 
+    ## Consumption 
+    c[id_U, T]          .=            b + (1 + r) .* k[id_U, T]
+    c[id_WL, T]         .= R_L(T) .* hc[id_WL, T] .* (1 .- s[id_WL,T] ) .*  (1 + r) .* k[id_WL, T]
+    c[id_WH, T]         .= R_H(T) .* hc[id_WH, T] .* (1 .- s[id_WH,T] ) .*  (1 + r) .* k[id_WH, T]
+
+end # End of runsim
