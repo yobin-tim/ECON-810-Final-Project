@@ -1,7 +1,6 @@
 # Load packages
 using Parameters, Statistics, Distributions, ProgressBars, SharedArrays, Distributed
 
-addprocs(6) 
 @everywhere include("structures.jl")
 # Include strutures with primitives and results
 # Initialize the model
@@ -149,13 +148,3 @@ end
 end # End of function
 
 
-@time prim, res, pre_comp = Init();
-@time vfn(prim, res, pre_comp)
-
-using JLD
-
-jldopen("results.jld", "w") do file
-    write(file, "val_fun", res.val_fun)
-    write(file, "k_pol", res.k_pol)
-    write(file, "s_pol", res.s_pol)
-end

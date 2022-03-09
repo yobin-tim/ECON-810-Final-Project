@@ -59,24 +59,24 @@ end
 # Structures to hold the policy functions
 # Asset holdings policy functions
 @everywhere mutable struct PolicyFunctionAssets
-    U             ::SharedArray{Float64,4}        # Asset holdings for individuals that are uemployed
-    ind_U         ::SharedArray{Int64,  4}        # (index) Asset holdings for individuals that are uemployed
-    W_L           ::SharedArray{Float64,4}        # Asset holdings for individuals that are employed in the Low-type firm
-    ind_W_L       ::SharedArray{Int64,  4}        # (index) Asset holdings for individuals that are employed in the Low-type firm
-    W_H           ::SharedArray{Float64,4}        # Asset holdings for individuals that are employed in the High-type firm
-    ind_W_H       ::SharedArray{Int64,  4}        # (index) Asset holdings for individuals that are employed in the High-type firm
+    U             ::SharedArray{Int64,4}        # Asset holdings for individuals that are uemployed
+    # ind_U         ::SharedArray{Int64,  4}        # (index) Asset holdings for individuals that are uemployed
+    W_L           ::SharedArray{Int64,4}        # Asset holdings for individuals that are employed in the Low-type firm
+    # ind_W_L       ::SharedArray{Int64,  4}        # (index) Asset holdings for individuals that are employed in the Low-type firm
+    W_H           ::SharedArray{Int64,4}        # Asset holdings for individuals that are employed in the High-type firm
+    # ind_W_H       ::SharedArray{Int64,  4}        # (index) Asset holdings for individuals that are employed in the High-type firm
 end 
 
 
 
 # Schooling choice policy functions
 @everywhere mutable struct PolicyFunctionSchooling
-    U             ::SharedArray{Float64,4}        # Schooling choice for individuals that are uemployed
-    ind_U         ::SharedArray{Int64,  4}        # (index) Schooling choice for individuals that are uemployed
-    W_L           ::SharedArray{Float64,4}        # Schooling choice for individuals that are employed in the Low-type firm
-    ind_W_L       ::SharedArray{Int64,  4}        # (index)Schooling choice for individuals that are employed in the Low-type firm
-    W_H           ::SharedArray{Float64,4}        # Schooling choice for individuals that are employed in the High-type firm
-    ind_W_H       ::SharedArray{Int64,  4}        # (index) Schooling choice for individuals that are employed in the High-type firm
+    U             ::SharedArray{Int64,4}        # Schooling choice for individuals that are uemployed
+    # ind_U         ::SharedArray{Int64,  4}        # (index) Schooling choice for individuals that are uemployed
+    W_L           ::SharedArray{Int64,4}        # Schooling choice for individuals that are employed in the Low-type firm
+    # ind_W_L       ::SharedArray{Int64,  4}        # (index)Schooling choice for individuals that are employed in the Low-type firm
+    W_H           ::SharedArray{Int64,4}        # Schooling choice for individuals that are employed in the High-type firm
+    # ind_W_H       ::SharedArray{Int64,  4}        # (index) Schooling choice for individuals that are employed in the High-type firm
 end
 
 # Structures to hold the resutls
