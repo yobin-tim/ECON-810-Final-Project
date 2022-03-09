@@ -185,9 +185,9 @@ function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_
     
     for t in 1:T-1       
         # Figure out which agents are employed and where
-        id_U  = (emp_status[:,t] == 0)
-        id_WL = (emp_status[:,t] == 1)
-        id_WH = (emp_status[:,t] == 2) 
+        id_U  = (emp_status[:,t] .== 0)
+        id_WL = (emp_status[:,t] .== 1)
+        id_WH = (emp_status[:,t] .== 2) 
 
         # Employment status
         ## next period asset holdings
