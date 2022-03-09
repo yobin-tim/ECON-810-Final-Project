@@ -172,8 +172,8 @@ function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_
     k[:,1]      .= rand(1:round(n_kPoints/2), nSim) # Todo: If we have time maybe do somethin like match the real distribution of wealth
     emp_status[:,1] .= 0
 
-    Z_mat = zeros(nSim, T)
-    δ_mat = zeros(nSim, T)
+    Z_mat = zeros(Int64, nSim, T)
+    δ_mat = zeros(Int64, nSim, T)
     # Draw z and δ shocks
     for j in 1:T 
         for i in 1:nSim  
@@ -202,7 +202,7 @@ function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_
         k[id_WL,t+1]         = k_pol.W_L[CartesianIndex.(k[id_WL,t], hc[id_WL,t], S[id_WL,t]),t] # k_t+1 employed in low-wage
         k[id_WH,t+1]         = k_pol.W_H[CartesianIndex.(k[id_WH,t], hc[id_WH,t], S[id_WH,t]),t] # k_t+1 employed in high-wage
         ## schooling choice
-        s[id_U,t]            =   s_pol.U[CartesianIndex.(k[id_U,t], hc[:,t], S[:,t]),t] #s_t unemployed
+        s[id_U,t]            =   s_pol.U[CartesianIndex.(k[id_U,t], hc[id_U,t], S[id_U,t]),t] #s_t unemployed
         s[id_WL,t]           = s_pol.W_L[CartesianIndex.(k[id_WL,t], hc[id_WL,t], S[id_WL,t]),t] #s_t employed in low-wage
         s[id_WH,t]           = s_pol.W_H[CartesianIndex.(k[id_WH,t], hc[id_WH,t], S[id_WH,t]),t] #s_t employed in high-wage
         ## Consumption 
@@ -214,23 +214,27 @@ function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_
         offer           = rand(Uniform(0,1), nSim) .< Π_offer
         good_offer      = ( S_grid[S[:,t]] .>= S_bar ) .* ( rand(Uniform(0,1), nSim) .< 1-μ )
         
-        emp_status[id_U,t+1] = (offer .* good_offer) .+ offer
-        emp_status[id_WL .+ id_WH, t+1] = emp_status[id_WL .+ id_WH, t] .* δ_mat[id_WL .+ id_WH, t]
+        emp_status[id_U,t+1] = (offer[id_U] .* good_offer[id_U]) .+ offer[id_U]
+        id_W = (id_WL .+ id_WH) .== 1
+        emp_status[id_W, t+1] .= emp_status[id_W, t] .* δ_mat[id_W, t]
 
         emp_streak[:, t+1] .+= 1
         emp_streak[id_U, t+1] .= 0 # Todo: Fix this 
 
         
-        hc[:,t+1]         = h_next_indexes[ hc[:,t], s[:,t], Z_mat[:,t]]
+        S[:, t+1] .= S[:, t] .+ s[:, t]
+
+        hc[:,t+1]         = h_next_indexes[ CartesianIndex.( hc[:,t], s[:,t], Z_mat[:,t] ) ]
     end # End of for t in 2:T-1
 
     # Last period
     # Figure out which agents are employed and where
-    id_U  = (emp_status[:,T] == 0)
-    id_WL = (emp_status[:,T] == 1)
-    id_WH = (emp_status[:,T] == 2) 
+    id_U  = (emp_status[:,T] .== 0)
+    id_WL = (emp_status[:,T] .== 1)
+    id_WH = (emp_status[:,T] .== 2) 
     ## Consumption 
-    c[id_U, T]  .=            b .+ (1 + r) .* k_grid(k[id_U, T])
+    # @show id_U, id_WL, id_WH
+    c[id_U, T]  .=            b .+ (1 + r) .* k_grid[ k[id_U, T] ]
     c[id_WL, T] .= R_L(T) .* h_grid[hc[id_WL, T]] #.* (1 .- s_grid[s[id_WL,T]] ) .*  (1 + r) .* k_grid[k[id_WL, T]]
     c[id_WH, T] .= R_H(T) .* h_grid[hc[id_WH, T]] #.* (1 .- s_grid[s[id_WH,T]] ) .*  (1 + r) .* k_grid[k[id_WH, T]]
 
