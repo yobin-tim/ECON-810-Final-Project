@@ -43,7 +43,7 @@ include("tauchen.jl")
     #Cumulative years of schooling
     n_SPoints::Int64            = (n_sPoints-1) * T + 1
     S_grid::Array{Float64,1}    = range(0.0, 1.0 * T, length = n_SPoints)
-    threshold::Float64          = 0.4
+    threshold::Float64          = (21/n_SPoints)
     S_bar::Float64              = S_grid[round(Int64,n_SPoints * threshold)]                           #todo: calibrate, if possible
     #Simulations
     nSim::Int64                 = 1000

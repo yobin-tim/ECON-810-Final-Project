@@ -1416,6 +1416,12 @@ INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/sansmathaccent/mathkerncmssi9.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/sansmathaccent/mathkerncmssi8.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmssbx10.tfm
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/sansmathaccent/mathkerncmssi8.tfm
 OUTPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.nav
 OUTPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.toc
 OUTPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.snm

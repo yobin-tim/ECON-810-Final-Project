@@ -86,10 +86,13 @@ end
         @sync @distributed for khS in 1:(n_kPoints * n_hPoints * n_SPoints)
             k,h,S       = Tuple(CartesianIndices((n_kPoints,n_hPoints,n_SPoints))[khS])
             # Skip unnatainable states
-            if S > (t-1)*(n_sPoints-1)+1
-                continue
+            # if S > (t-1)*(n_sPoints-1)+1
+            #     continue
+            # end
+            Sprime_ind = S:S+n_sPoints-1
+            if S+n_sPoints - 1 > n_SPoints 
+                Sprime_ind = replace(x -> x > n_SPoints ? n_SPoints : x, Sprime_ind)
             end
-            Sprime_ind = S:S+n_sPoints-1 # index of the next period's S for any given s
             h_next_ind = h_next_indexes[h,:,:] # (fixed h) index of the next period's h for any given s all shocks z
             income_WL   = R_L(t) .* ℓ_effective[h, :] # Possible income for each selection of s (Firm L)
             income_WH   = R_H(t) .* ℓ_effective[h, :] # Possible income for each selection of s (Firm H)
@@ -153,7 +156,7 @@ function Init2(prim::Primitives)
     hc = ones(prim.nSim, prim.T)
     emp_status = zeros(prim.nSim, prim.T)
     emp_streak = zeros(prim.nSim, prim.T)
-    k = ones(prim.nSim, prim.T+1)
+    k = ones(prim.nSim, prim.T)
     c = zeros(prim.nSim, prim.T)
     S = ones(prim.nSim, prim.T)
     s = ones(prim.nSim, prim.T)
@@ -169,7 +172,7 @@ function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_
 
     #Initial period setup; indexes initialized at 1, assets at 0 already
     # emp_status initialized at 0 too.
-    k[:,1]      .= rand(1:round(n_kPoints/2), nSim) # Todo: If we have time maybe do somethin like match the real distribution of wealth
+    # k[:,1]      .= rand(1:round(n_kPoints/2), nSim) # Todo: If we have time maybe do somethin like match the real distribution of wealth
     emp_status[:,1] .= 0
 
     Z_mat = zeros(Int64, nSim, T)
@@ -207,22 +210,22 @@ function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_
         s[id_WH,t]           = s_pol.W_H[CartesianIndex.(k[id_WH,t], hc[id_WH,t], S[id_WH,t]),t] #s_t employed in high-wage
         ## Consumption 
         c[id_U, t]          .= b .+ (1 + r) .* k_grid[k[id_U, t]] - k_grid[k[id_U,t+1] ]
-        c[id_WL, t]         .= R_L(t) .* h_grid[hc[id_WL, t]] .* (1 .- s_grid[s[id_WL,t]] ) .*  (1 + r) .* k_grid[k[id_WL, t]] - k_grid[k[id_WL,t+1]] 
-        c[id_WH, t]         .= R_H(t) .* h_grid[hc[id_WH, t]] .* (1 .- s_grid[s[id_WH,t]] ) .*  (1 + r) .* k_grid[k[id_WH, t]] - k_grid[k[id_WH,t+1]]
+        c[id_WL, t]         .= R_L(t) .* h_grid[hc[id_WL, t]] .* (1 .- s_grid[s[id_WL,t]] ) .+  (1 + r) .* k_grid[k[id_WL, t]] - k_grid[k[id_WL,t+1]] 
+        c[id_WH, t]         .= R_H(t) .* h_grid[hc[id_WH, t]] .* (1 .- s_grid[s[id_WH,t]] ) .+  (1 + r) .* k_grid[k[id_WH, t]] - k_grid[k[id_WH,t+1]]
         # Job offer
         Π_offer         = Π.(1 .- s_grid[s[:,t]], S_grid[S[:,t]], t) # Probability of getting a job offer
         offer           = rand(Uniform(0,1), nSim) .< Π_offer
         good_offer      = ( S_grid[S[:,t]] .>= S_bar ) .* ( rand(Uniform(0,1), nSim) .< 1-μ )
         
         emp_status[id_U,t+1] = (offer[id_U] .* good_offer[id_U]) .+ offer[id_U]
-        id_W = (id_WL .+ id_WH) .== 1
+        id_W = ((id_WL .+ id_WH) .== 1)
         emp_status[id_W, t+1] .= emp_status[id_W, t] .* δ_mat[id_W, t]
 
         emp_streak[:, t+1] .+= 1
         emp_streak[id_U, t+1] .= 0 # Todo: Fix this 
 
         
-        S[:, t+1] .= S[:, t] .+ s[:, t]
+        S[:, t+1] .= S[:, t] .+ (s[:, t] .- 1)
 
         hc[:,t+1]         = h_next_indexes[ CartesianIndex.( hc[:,t], s[:,t], Z_mat[:,t] ) ]
     end # End of for t in 2:T-1

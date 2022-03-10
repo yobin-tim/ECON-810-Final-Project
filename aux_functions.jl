@@ -5,7 +5,7 @@ include("functions.jl")
 
 # Plot style
 begin
-    theme(:juno); #:vibrant
+    theme(:vibrant); #:vibrant
     default(fontfamily="Computer Modern", framestyle=:box); # LaTex-style
     gr(size = (400, 400)); # default plot size
 end
