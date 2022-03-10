@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.10.11)  9 MAR 2022 14:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.10.11)  9 MAR 2022 19:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -768,7 +768,6 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 37.
 LaTeX Info: Redefining \pageref on input line 37.
 LaTeX Info: Redefining \nameref on input line 37.
- (/Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out) (/Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out)
 \@outlinefile=\write5
 \openout5 = `Slides.out'.
 
@@ -839,78 +838,86 @@ Package lastpage Info: Please have a look at the pageslts package at
 (lastpage)             ! on input line 37.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/fmtcount/fc-english.def
 File: fc-english.def 2016/01/12
-) (/Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.nav) [1
+)
+No file Slides.nav.
+[1
 
-{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (/Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.toc) [2
-
-] [3
+{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+No file Slides.toc.
+[2
 
 ]
-LaTeX Font Info:    Trying to load font information for U+msa on input line 60.
+<Figures/fig_median_income_by_age_and_education.pdf, id=79, 602.25pt x 401.5pt>
+File: Figures/fig_median_income_by_age_and_education.pdf Graphic file (type pdf)
+<use Figures/fig_median_income_by_age_and_education.pdf>
+Package pdftex.def Info: Figures/fig_median_income_by_age_and_education.pdf  used on input line 50.
+(pdftex.def)             Requested size: 341.43306pt x 227.6321pt.
+ [3
+
+ </Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/fig_median_income_by_age_and_education.pdf>]
+<Figures/relation_median_wage_hs_percent.pdf, id=107, 602.25pt x 401.5pt>
+File: Figures/relation_median_wage_hs_percent.pdf Graphic file (type pdf)
+<use Figures/relation_median_wage_hs_percent.pdf>
+Package pdftex.def Info: Figures/relation_median_wage_hs_percent.pdf  used on input line 54.
+(pdftex.def)             Requested size: 341.43306pt x 227.6321pt.
+ [4
+
+ </Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/relation_median_wage_hs_percent.pdf>]
+LaTeX Font Info:    Trying to load font information for U+msa on input line 66.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 60.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 66.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for OT1+mathkerncmss on input line 60.
+LaTeX Font Info:    Trying to load font information for OT1+mathkerncmss on input line 66.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/sansmathaccent/ot1mathkerncmss.fd
 File: ot1mathkerncmss.fd 2020/01/31 Fontinst v1.933 font definitions for OT1/mathkerncmss.
-) [4
-
-] [5
+) [5
 
 ] [6
 
 ] [7
 
+] [8
+
 ]
-Overfull \hbox (11.62614pt too wide) detected at line 115
+Overfull \hbox (11.62614pt too wide) detected at line 121
 []
  []
 
-[8
-
-] [9
+[9
 
 ] [10
 
 ] [11
 
-] [12
+])
+Runaway argument?
+\UseOneTimeHook {enddocument}\@kernel@after@enddocument \@checkend {d\ETC.
+! File ended while scanning use of \beamer@collect@@body.
+<inserted text> 
+                \par 
+<*> ...ing 2022/ECON 810/Final Project/Slides.tex"
+                                                  
+I suspect you have forgotten a `}', causing me
+to read past where you wanted me to stop.
+I'll try to recover; but if the error is serious,
+you'd better type `E' or `X' now and fix your file.
 
-] [13
-
-]
-\tf@nav=\write6
-\openout6 = `Slides.nav'.
-
-\tf@toc=\write7
-\openout7 = `Slides.toc'.
-
-\tf@snm=\write8
-\openout8 = `Slides.snm'.
+! Emergency stop.
+<*> ...ing 2022/ECON 810/Final Project/Slides.tex"
+                                                  
+*** (job aborted, no legal \end found)
 
  
-AED: lastpage setting LastPage
-(/Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.aux)
-Package rerunfilecheck Info: File `Slides.out' has not changed.
-(rerunfilecheck)             Checksum: 3D217891D274A5558DB4D7316A6EA54B;209.
- ) 
 Here is how much of TeX's memory you used:
- 21890 strings out of 478994
- 409767 string characters out of 5858183
- 711692 words of memory out of 5000000
- 38832 multiletter control sequences out of 15000+600000
- 413968 words of font info for 65 fonts, out of 8000000 for 9000
+ 21804 strings out of 478994
+ 407855 string characters out of 5858183
+ 711590 words of memory out of 5000000
+ 38762 multiletter control sequences out of 15000+600000
+ 412329 words of font info for 59 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 131i,14n,132p,1147b,646s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmss9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on "/Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.pdf" (13 pages, 179894 bytes).
-PDF statistics:
- 461 PDF objects out of 1000 (max. 8388607)
- 408 compressed objects within 5 object streams
- 30 named destinations out of 1000 (max. 500000)
- 121 words of extra memory for PDF output out of 10000 (max. 10000000)
-
+ 131i,14n,132p,1147b,589s stack positions out of 5000i,500n,10000p,200000b,80000s
+!  ==> Fatal error occurred, no output PDF file produced!

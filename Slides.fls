@@ -1327,16 +1327,6 @@ INPUT /usr/local/texlive/2021/texmf-dist/tex/generic/gettitlestring/gettitlestri
 INPUT /usr/local/texlive/2021/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 INPUT /usr/local/texlive/2021/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 INPUT /usr/local/texlive/2021/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
 OUTPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
 INPUT /usr/local/texlive/2021/texmf-dist/tex/latex/translator/translator-basic-dictionary-English.dict
 INPUT /usr/local/texlive/2021/texmf-dist/tex/latex/translator/translator-basic-dictionary-English.dict
@@ -1366,17 +1356,21 @@ INPUT /usr/local/texlive/2021/texmf-dist/tex/latex/fmtcount/fc-english.def
 INPUT /usr/local/texlive/2021/texmf-dist/tex/latex/fmtcount/fc-english.def
 INPUT /usr/local/texlive/2021/texmf-dist/tex/latex/fmtcount/fc-english.def
 INPUT /usr/local/texlive/2021/texmf-dist/tex/latex/fmtcount/fc-english.def
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.nav
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.nav
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.nav
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmss8.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmss12.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmss8.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmss8.tfm
 INPUT /usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.toc
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.toc
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.toc
+INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/fig_median_income_by_age_and_education.pdf
+INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/fig_median_income_by_age_and_education.pdf
+INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/fig_median_income_by_age_and_education.pdf
+INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/fig_median_income_by_age_and_education.pdf
+INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/fig_median_income_by_age_and_education.pdf
+INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/relation_median_wage_hs_percent.pdf
+INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/relation_median_wage_hs_percent.pdf
+INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/relation_median_wage_hs_percent.pdf
+INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/relation_median_wage_hs_percent.pdf
+INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Figures/relation_median_wage_hs_percent.pdf
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -1416,33 +1410,3 @@ INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/sansmathaccent/mathkerncmssi9.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/sansmathaccent/mathkerncmssi8.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmssbx10.tfm
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmmi8.tfm
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex8.tfm
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/sansmathaccent/mathkerncmssi8.tfm
-OUTPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.nav
-OUTPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.toc
-OUTPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.snm
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.aux
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
-INPUT /Volumes/GoogleDrive-104835499092353911772/My Drive/Courses/Taken Courses/Spring 2022/ECON 810/Final Project/Slides.out
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmss10.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmss9.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssbx10.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi10.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi8.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmssi9.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy5.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb
-INPUT /usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb
