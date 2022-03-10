@@ -40,7 +40,7 @@ pf2 =  plot(1:prim.T, [prim.s_grid[res_vthr.s_pol.U[21,50,5,:]]  prim.s_grid[res
 plot(pf1, pf2, layout = (1,2))
 savefig("figures/s_pol_U.pdf")
 
-prim, res, pre_comp = read_data(path, "_v1")
+prim, res_vthr, = read_data(path, "_vthr")
 
 sim = Init2(prim)
 runsim(prim, res, sim, pre_comp)

@@ -164,8 +164,8 @@ function Init2(prim::Primitives)
     return sim
 end
 
-function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_Computed)
-    @unpack T, n_kPoints, n_hPoints, n_SPoints, R_L, R_H, h_grid, k_grid, r, u, β, s_grid, S_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α, b, Π, S_bar, δ, μ, nSim, n_zPoints  = prim
+function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_Computed, S_bar::Float64)
+    @unpack T, n_kPoints, n_hPoints, n_SPoints, R_L, R_H, h_grid, k_grid, r, u, β, s_grid, S_grid, n_sPoints, z_trProb, z_grid, H, h_min, h_max, α, b, Π, δ, μ, nSim, n_zPoints  = prim
     @unpack k_pol, s_pol  = res
     @unpack k, c, income, hc, emp_status, emp_streak, S, s = sim
     @unpack h_next_indexes = pre_comp
@@ -174,7 +174,9 @@ function runsim(prim::Primitives, res::Results, sim::Simulations, pre_comp::Pre_
     # emp_status initialized at 0 too.
     # k[:,1]      .= rand(1:round(n_kPoints/2), nSim) # Todo: If we have time maybe do somethin like match the real distribution of wealth
     emp_status[:,1] .= 0
-
+    # for i in 1:nSim
+    #     S[i,1]      = Sample([1.0, 6.0, 11.0, 16.0, 21.0], Weigts([]) ) 
+    # end 
     Z_mat = zeros(Int64, nSim, T)
     δ_mat = zeros(Int64, nSim, T)
     # Draw z and δ shocks
